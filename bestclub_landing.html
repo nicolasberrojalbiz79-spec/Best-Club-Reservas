@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BestClub — Reservá tu Clase de Prueba Gratis</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=DM+Sans:wght@300;400;500&display=swap');
+:root{
+  --bg:#080808;--surface:#111;--card:#141414;
+  --lime:#c6f135;--lime-dim:rgba(198,241,53,.10);--lime-glow:rgba(198,241,53,.22);
+  --white:#f5f5f5;--muted:#555;--border:#1e1e1e;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:16px 40px;background:rgba(8,8,8,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);transition:box-shadow .3s;}
+.nav-logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;letter-spacing:1px;text-transform:uppercase;}
+.nav-logo span{color:var(--lime);}
+.nav-cta{background:var(--lime);color:#000;font-family:'DM Sans',sans-serif;font-weight:500;font-size:13px;padding:10px 22px;border:none;border-radius:2px;cursor:pointer;text-decoration:none;transition:opacity .2s;}
+.nav-cta:hover{opacity:.85;}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 40px 80px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:15%;left:52%;width:650px;height:650px;background:radial-gradient(ellipse,rgba(198,241,53,.07) 0%,transparent 65%);pointer-events:none;animation:pulse 4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--lime);margin-bottom:28px;animation:fadeUp .6s ease .1s both;}
+.hero-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--lime);animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(64px,12vw,150px);line-height:.88;letter-spacing:-1px;text-transform:uppercase;animation:fadeUp .7s ease .2s both;}
+h1 .lime{color:var(--lime);}
+.hero-sub{margin-top:28px;font-size:17px;color:#888;max-width:480px;line-height:1.7;animation:fadeUp .7s ease .35s both;}
+.hero-sub strong{color:var(--white);font-weight:500;}
+.hero-actions{margin-top:36px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;animation:fadeUp .7s ease .5s both;}
+.btn-lime{background:var(--lime);color:#000;font-family:'DM Sans',sans-serif;font-weight:500;font-size:15px;padding:18px 40px;border:none;border-radius:2px;cursor:pointer;text-decoration:none;display:inline-block;transition:all .2s;}
+.btn-lime:hover{transform:translateY(-2px);box-shadow:0 12px 40px var(--lime-glow);}
+.btn-ghost{color:var(--muted);font-size:14px;text-decoration:none;transition:color .2s;}
+.btn-ghost:hover{color:var(--white);}
+.hero-proof{margin-top:64px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;animation:fadeUp .7s ease .65s both;}
+.proof-item{display:flex;align-items:center;gap:10px;}
+.proof-num{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:30px;color:var(--lime);line-height:1;}
+.proof-label{font-size:12px;color:var(--muted);line-height:1.4;}
+.proof-sep{width:1px;height:28px;background:var(--border);}
+
+section{padding:80px 40px;border-top:1px solid var(--border);position:relative;}
+.eyebrow{font-size:10px;font-weight:500;letter-spacing:4px;text-transform:uppercase;color:var(--lime);margin-bottom:40px;}
+h2{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(38px,6vw,72px);text-transform:uppercase;letter-spacing:-.5px;line-height:.95;margin-bottom:44px;}
+h2 span{color:var(--lime);}
+
+/* STEPS */
+.steps-bar{display:flex;margin-bottom:48px;border:1px solid var(--border);width:fit-content;overflow:hidden;border-radius:2px;}
+.step-tab{padding:11px 22px;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--border);display:flex;align-items:center;gap:8px;transition:all .2s;}
+.step-tab:last-child{border-right:none;}
+.step-tab.active{background:var(--lime-dim);color:var(--lime);}
+.step-tab.done{color:var(--lime);}
+.step-dot{width:20px;height:20px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.step-tab.done .step-dot{background:var(--lime);border-color:var(--lime);color:#000;}
+
+/* PASO 1 — CLASES */
+.clases-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:2px;background:var(--border);}
+.clase-card{background:var(--card);padding:26px 22px;cursor:pointer;transition:all .2s;border:2px solid transparent;position:relative;}
+.clase-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--lime);transform:scaleX(0);transition:transform .3s;}
+.clase-card:hover::after,.clase-card.selected::after{transform:scaleX(1);}
+.clase-card:hover,.clase-card.selected{background:#1a1a1a;border-color:var(--lime);}
+.clase-chk{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;background:var(--lime);color:#000;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;}
+.clase-card.selected .clase-chk{opacity:1;}
+.clase-icon{font-size:26px;margin-bottom:12px;display:block;}
+.clase-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.clase-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+
+/* PASO 2 — SEDES */
+#stepSede,#stepHorario,#stepForm{display:none;}
+.back-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;padding:9px 18px;border-radius:2px;cursor:pointer;margin-bottom:28px;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+.back-btn:hover{border-color:var(--white);color:var(--white);}
+.ctx-banner{display:inline-flex;align-items:center;gap:10px;background:var(--lime-dim);border:1px solid rgba(198,241,53,.2);padding:12px 20px;border-radius:2px;margin-bottom:32px;font-size:14px;color:var(--white);flex-wrap:wrap;}
+.ctx-banner strong{color:var(--lime);}
+
+.sedes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:2px;background:var(--border);}
+.sede-card{background:var(--card);padding:26px 22px;cursor:pointer;transition:all .2s;border:2px solid transparent;position:relative;}
+.sede-card:hover{background:#1a1a1a;border-color:var(--lime);}
+.sede-card.sel{background:#1a1a1a;border-color:var(--lime);}
+.sede-chk{position:absolute;top:12px;right:12px;width:22px;height:22px;border-radius:50%;background:var(--lime);color:#000;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;}
+.sede-card.sel .sede-chk{opacity:1;}
+.sede-n{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:40px;color:#222;line-height:1;margin-bottom:10px;transition:color .2s;}
+.sede-card:hover .sede-n,.sede-card.sel .sede-n{color:var(--lime);}
+.sede-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;text-transform:uppercase;margin-bottom:4px;}
+.sede-addr{font-size:12px;color:var(--muted);margin-bottom:10px;}
+.sede-tags{display:flex;flex-wrap:wrap;gap:4px;}
+.stag{font-size:10px;padding:3px 8px;border-radius:2px;background:rgba(255,255,255,.04);color:#444;border:1px solid #222;}
+
+.action-btn{background:var(--lime);color:#000;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;padding:14px 36px;border:none;border-radius:2px;cursor:pointer;transition:all .2s;display:none;margin-top:28px;}
+.action-btn.show{display:inline-block;}
+.action-btn:hover{transform:translateY(-2px);box-shadow:0 10px 32px var(--lime-glow);}
+
+/* PASO 3 — HORARIO */
+.horario-ctx{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px;}
+.hctx{padding:8px 16px;background:var(--lime-dim);border:1px solid rgba(198,241,53,.2);border-radius:2px;font-size:13px;color:var(--white);}
+.hctx strong{color:var(--lime);}
+
+/* días tabs */
+.dias-tabs{display:flex;border:1px solid var(--border);width:fit-content;overflow-x:auto;border-radius:2px;margin-bottom:24px;max-width:100%;}
+.dia-tab{padding:10px 18px;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--border);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.dia-tab:last-child{border-right:none;}
+.dia-tab.active{background:var(--lime-dim);color:var(--lime);}
+.dia-tab:hover:not(.active){color:var(--white);}
+
+/* slots grupales */
+.slots-wrap{display:flex;flex-wrap:wrap;gap:8px;min-height:60px;}
+.slot-pill{padding:13px 16px;border:1.5px solid var(--border);border-radius:2px;cursor:pointer;transition:all .2s;min-width:110px;text-align:center;}
+.slot-pill:hover{border-color:var(--lime);background:var(--lime-dim);}
+.slot-pill.sel{border-color:var(--lime);background:var(--lime-dim);}
+.sp-hora{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;color:var(--white);line-height:1;display:block;}
+.slot-pill.sel .sp-hora{color:var(--lime);}
+.sp-clase{font-size:10px;color:var(--muted);margin-top:3px;display:block;}
+.no-slot{padding:16px;color:var(--muted);font-size:13px;}
+
+/* slots musculación */
+.muscu-intro{font-size:13px;color:var(--muted);margin-bottom:20px;padding:12px 16px;border:1px solid var(--border);border-radius:2px;line-height:1.6;}
+.muscu-intro strong{color:var(--lime);}
+.horas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;}
+.hora-pill{padding:13px 8px;border:1.5px solid var(--border);border-radius:2px;cursor:pointer;transition:all .2s;text-align:center;}
+.hora-pill:hover{border-color:var(--lime);background:var(--lime-dim);}
+.hora-pill.sel{border-color:var(--lime);background:var(--lime-dim);}
+.hp-h{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:var(--white);line-height:1;display:block;}
+.hora-pill.sel .hp-h{color:var(--lime);}
+.hp-s{font-size:10px;color:var(--muted);margin-top:2px;display:block;}
+
+/* PASO 4 — FORM */
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--border);margin-bottom:36px;max-width:700px;}
+.sum-i{background:var(--card);padding:15px 18px;}
+.sum-l{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.sum-v{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;text-transform:uppercase;color:var(--lime);line-height:1.2;}
+.form-wrap{max-width:520px;}
+.fg{margin-bottom:15px;}
+label{display:block;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--white);padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:300;border-radius:2px;outline:none;transition:border-color .2s;}
+input:focus{border-color:var(--lime);}
+input::placeholder{color:var(--muted);}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.sbtn{width:100%;background:var(--lime);color:#000;font-family:'DM Sans',sans-serif;font-weight:600;font-size:16px;padding:17px;border:none;border-radius:2px;cursor:pointer;margin-top:8px;transition:all .2s;}
+.sbtn:hover{transform:translateY(-2px);box-shadow:0 12px 40px var(--lime-glow);}
+.sbtn:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none;}
+.fnote{margin-top:11px;font-size:11px;color:var(--muted);text-align:center;line-height:1.5;}
+
+/* SUCCESS */
+#stepSuccess{display:none;text-align:center;padding:60px 0;}
+.sicon{width:80px;height:80px;border-radius:50%;background:var(--lime-dim);border:2px solid var(--lime);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 24px;animation:pop .4s ease-out;}
+@keyframes pop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.stitle{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:48px;text-transform:uppercase;margin-bottom:12px;}
+.stitle span{color:var(--lime);}
+.sdesc{font-size:14px;color:var(--muted);max-width:460px;margin:0 auto 28px;line-height:1.7;}
+.wa-btn{display:inline-flex;align-items:center;gap:10px;background:#25d366;color:#fff;font-size:15px;font-weight:500;padding:16px 32px;border-radius:2px;text-decoration:none;transition:opacity .2s;}
+.wa-btn:hover{opacity:.85;}
+
+/* TESTIMONIOS */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);}
+.testi-card{background:var(--card);padding:36px 30px;}
+.testi-stars{color:var(--lime);font-size:13px;letter-spacing:2px;margin-bottom:14px;}
+.testi-text{font-size:14px;color:#aaa;line-height:1.7;font-style:italic;margin-bottom:22px;}
+.testi-author{display:flex;align-items:center;gap:12px;}
+.tav{width:40px;height:40px;border-radius:50%;background:var(--lime-dim);border:2px solid rgba(198,241,53,.3);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:var(--lime);}
+.tname{font-weight:500;font-size:14px;color:var(--white);}
+.trole{font-size:11px;color:var(--muted);}
+
+.cta-final{text-align:center;}
+.cta-final::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(198,241,53,.05) 0%,transparent 70%);pointer-events:none;}
+.cta-final h2{max-width:700px;margin:0 auto 16px;}
+.cta-final p{font-size:15px;color:var(--muted);margin-bottom:36px;}
+
+footer{padding:32px 40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.footer-logo{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:22px;text-transform:uppercase;letter-spacing:1px;}
+.footer-logo span{color:var(--lime);}
+.footer-note{font-size:12px;color:var(--muted);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){
+  nav{padding:14px 20px;}
+  section,.hero{padding-left:20px;padding-right:20px;}
+  .hero{padding-top:100px;}
+  h1{font-size:54px;}h2{font-size:38px;}
+  .steps-bar{flex-wrap:wrap;width:100%;}
+  .step-tab{flex:1;min-width:0;justify-content:center;padding:10px 8px;font-size:9px;}
+  .summary{grid-template-columns:1fr 1fr;}
+  .testi-grid{grid-template-columns:1fr;}
+  .frow{grid-template-columns:1fr;}
+  footer{flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<nav id="topNav">
+  <div class="nav-logo">Best<span>Club</span></div>
+  <a href="#reservar" class="nav-cta">Reservar clase gratis →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-tag">8 sedes en Córdoba · Clase de prueba 100% gratuita</div>
+  <h1>Tu primera<br>clase es<br><span class="lime">gratis.</span></h1>
+  <p class="hero-sub">Elegí la clase, la sede más cercana y el horario que más te quede. Confirmación por <strong>WhatsApp</strong> en minutos. Sin compromiso.</p>
+  <div class="hero-actions">
+    <a href="#reservar" class="btn-lime">💪 Quiero mi clase gratis</a>
+    <a href="#reservar" class="btn-ghost">Ver clases ↓</a>
+  </div>
+  <div class="hero-proof">
+    <div class="proof-item"><div class="proof-num">8</div><div class="proof-label">sedes en<br>Córdoba</div></div>
+    <div class="proof-sep"></div>
+    <div class="proof-item"><div class="proof-num">+15</div><div class="proof-label">tipos de<br>clases</div></div>
+    <div class="proof-sep"></div>
+    <div class="proof-item"><div class="proof-num">6am</div><div class="proof-label">primera clase<br>del día</div></div>
+    <div class="proof-sep"></div>
+    <div class="proof-item"><div class="proof-num">4.9★</div><div class="proof-label">Google<br>Reviews</div></div>
+  </div>
+</section>
+
+<!-- RESERVAR -->
+<section id="reservar">
+  <div class="eyebrow">Reserva gratuita · Sin compromiso · Confirmación por WhatsApp</div>
+  <h2>Elegí y<br><span>reservá</span></h2>
+
+  <div class="steps-bar">
+    <div class="step-tab active" id="tab1"><div class="step-dot">1</div> Clase</div>
+    <div class="step-tab"        id="tab2"><div class="step-dot">2</div> Sede</div>
+    <div class="step-tab"        id="tab3"><div class="step-dot">3</div> Horario</div>
+    <div class="step-tab"        id="tab4"><div class="step-dot">4</div> Tus datos</div>
+  </div>
+
+  <!-- PASO 1: CLASE -->
+  <div id="stepClase">
+    <div class="clases-grid">
+      <div class="clase-card" onclick="pickClase(this,'Musculación')">
+        <div class="clase-chk">✓</div><span class="clase-icon">🏋️</span>
+        <div class="clase-name">Musculación</div>
+        <div class="clase-desc">7 sedes · Libre acceso todo el día</div>
+      </div>
+      <div class="clase-card" onclick="pickClase(this,'Funcional')">
+        <div class="clase-chk">✓</div><span class="clase-icon">⚡</span>
+        <div class="clase-name">Funcional</div>
+        <div class="clase-desc">Alta intensidad · Cuerpo completo</div>
+      </div>
+      <div class="clase-card" onclick="pickClase(this,'CrossFit')">
+        <div class="clase-chk">✓</div><span class="clase-icon">🔥</span>
+        <div class="clase-name">CrossFit</div>
+        <div class="clase-desc">Alto rendimiento · Superación constante</div>
+      </div>
+      <div class="clase-card" onclick="pickClase(this,'FullBody')">
+        <div class="clase-chk">✓</div><span class="clase-icon">💥</span>
+        <div class="clase-name">FullBody</div>
+        <div class="clase-desc">Trabajo total en una sola sesión</div>
+      </div>
+      <div class="clase-card" onclick="pickClase(this,'Yoga')">
+        <div class="clase-chk">✓</div><span class="clase-icon">🧘</span>
+        <div class="clase-name">Yoga</div>
+        <div class="clase-desc">Flexibilidad y bienestar mental</div>
+      </div>
+      <div class="clase-card" onclick="pickClase(this,'Pilates')">
+        <div class="clase-chk">✓</div><span class="clase-icon">🤸</span>
+        <div class="clase-name">Pilates</div>
+        <div class="clase-desc">Core, postura y tonificación</div>
+      </div>
+      <div class="clase-card" onclick="pickClase(this,'Boxeo')">
+        <div class="clase-chk">✓</div><span class="clase-icon">🥊</span>
+        <div class="clase-name">Boxeo</div>
+        <div class="clase-desc">Técnica + cardio brutal</div>
+      </div>
+      <div class="clase-card" onclick="pickClase(this,'Muay Thai')">
+        <div class="clase-chk">✓</div><span class="clase-icon">🤜</span>
+        <div class="clase-name">Muay Thai</div>
+        <div class="clase-desc">Arte marcial + acondicionamiento total</div>
+      </div>
+      <div class="clase-card" onclick="pickClase(this,'Zumba')">
+        <div class="clase-chk">✓</div><span class="clase-icon">💃</span>
+        <div class="clase-name">Zumba</div>
+        <div class="clase-desc">Bailás, quemás y te divertís</div>
+      </div>
+      <div class="clase-card" onclick="pickClase(this,'Spinning')">
+        <div class="clase-chk">✓</div><span class="clase-icon">🚴</span>
+        <div class="clase-name">Spinning</div>
+        <div class="clase-desc">Cardio de élite en bicicleta</div>
+      </div>
+      <div class="clase-card" onclick="pickClase(this,'Stretching')">
+        <div class="clase-chk">✓</div><span class="clase-icon">🌿</span>
+        <div class="clase-name">Stretching</div>
+        <div class="clase-desc">Movilidad y elongación activa</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASO 2: SEDE -->
+  <div id="stepSede">
+    <button class="back-btn" onclick="goTo(1)">← Cambiar clase</button>
+    <div class="ctx-banner">💪 Clase: <strong id="ctxClase1">—</strong> &nbsp;·&nbsp; Elegí la sede más cercana</div>
+    <div class="sedes-grid" id="sedesGrid"></div>
+    <button class="action-btn" id="btnSede" onclick="goTo(3)">Ver horarios disponibles →</button>
+  </div>
+
+  <!-- PASO 3: HORARIO -->
+  <div id="stepHorario">
+    <button class="back-btn" onclick="goTo(2)">← Cambiar sede</button>
+    <div class="horario-ctx">
+      <div class="hctx">💪 <strong id="ctxClase2">—</strong></div>
+      <div class="hctx">📍 <strong id="ctxSede2">—</strong></div>
+    </div>
+    <div id="horarioInner"></div>
+    <button class="action-btn" id="btnHorario" onclick="goTo(4)">Continuar →</button>
+  </div>
+
+  <!-- PASO 4: DATOS -->
+  <div id="stepForm">
+    <button class="back-btn" onclick="goTo(3)">← Cambiar horario</button>
+    <div class="summary">
+      <div class="sum-i"><div class="sum-l">Clase</div><div class="sum-v" id="sumC">—</div></div>
+      <div class="sum-i"><div class="sum-l">Sede</div><div class="sum-v" id="sumS">—</div></div>
+      <div class="sum-i"><div class="sum-l">Día</div><div class="sum-v" id="sumD">—</div></div>
+      <div class="sum-i"><div class="sum-l">Horario</div><div class="sum-v" id="sumH">—</div></div>
+    </div>
+    <div class="form-wrap">
+      <form onsubmit="enviar(event)">
+        <div class="frow">
+          <div class="fg"><label>Nombre</label><input type="text" id="fn" placeholder="Tu nombre" required autocomplete="given-name"></div>
+          <div class="fg"><label>Apellido</label><input type="text" id="fa" placeholder="Tu apellido" required autocomplete="family-name"></div>
+        </div>
+        <div class="fg"><label>WhatsApp</label><input type="tel" id="fw" placeholder="Ej: 351 000 0000" required autocomplete="tel" inputmode="tel"></div>
+        <div class="fg"><label>DNI</label><input type="text" id="fd" placeholder="Sin puntos, ej: 38500000" required inputmode="numeric" pattern="[0-9]{7,8}" title="7 u 8 dígitos sin puntos"></div>
+        <button type="submit" class="sbtn" id="sbtn">✅ Confirmar reserva gratis</button>
+        <p class="fnote">🔒 Datos seguros · Te escribimos por WhatsApp para confirmar</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div id="stepSuccess">
+    <div class="sicon">🎉</div>
+    <div class="stitle">¡Reserva <span>confirmada!</span></div>
+    <p class="sdesc" id="sDesc">Tu reserva fue registrada correctamente.</p>
+    <a href="#" target="_blank" class="wa-btn" id="waLink">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Hablar con la sede por WhatsApp
+    </a>
+  </div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section>
+  <div class="eyebrow">Lo que dicen nuestros alumnos</div>
+  <h2>Ellos ya<br><span>probaron</span></h2>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Vine a la clase de prueba sin saber qué esperar y me quedé. Los profes son increíbles y el ambiente te engancha desde el primer día."</p>
+      <div class="testi-author"><div class="tav">SL</div><div><div class="tname">Sofía L.</div><div class="trole">Funcional · Chacabuco 560</div></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Reservé en dos minutos y me llegó la confirmación al instante. Vine, probé CrossFit y al día siguiente ya era socio."</p>
+      <div class="testi-author"><div class="tav">MR</div><div><div class="tname">Matías R.</div><div class="trole">CrossFit · Chacabuco 560</div></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Nunca había hecho Pilates. La clase de prueba me convenció. Ya llevo 6 meses y no paro. Las profes son excelentes."</p>
+      <div class="testi-author"><div class="tav">VG</div><div><div class="tname">Valentina G.</div><div class="trole">Pilates · Rosario de Sta. Fe 186</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-final">
+  <div class="eyebrow">¿Qué esperás?</div>
+  <h2>El primer paso<br>es <span>gratis.</span></h2>
+  <p>Más de 500 alumnos empezaron exactamente así. Con una clase de prueba.</p>
+  <a href="#reservar" class="btn-lime" style="font-size:17px;padding:20px 48px">Reservar mi clase gratis →</a>
+</section>
+
+<footer>
+  <div class="footer-logo">Best<span>Club</span></div>
+  <div class="footer-note">© 2026 BestClub · Córdoba, Argentina · 8 sedes</div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  GOOGLE APPS SCRIPT — Calendar + Sheets
+// ═══════════════════════════════════════════════════════════════
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLF5jCDFoTJLnVgqH1FbhiB38ImqZB5sHEK-gVjeXKnYLDS2ge-GIR4KA_pQHGtFqP/exec';
+
+// ═══════════════════════════════════════════════════════════════
+//  MAPA DE ACTIVIDADES POR SEDE (según imagen de horarios)
+//  Musculación: todas las sedes MENOS Chacabuco 560
+// ═══════════════════════════════════════════════════════════════
+const SEDES = [
+  {
+    id:'s1', num:'01', nombre:'Chacabuco 472', dir:'Chacabuco 472, Córdoba',
+    wa:'5493515424040',
+    clases:['Musculación','Stretching','Yoga','FullBody','Zumba'],
+    muscu:{ desde:8, hasta:23 }
+  },
+  {
+    id:'s2', num:'02', nombre:'Chacabuco 560', dir:'Chacabuco 560, Córdoba',
+    wa:'5493516717101',
+    clases:['CrossFit','Funcional'],
+    muscu: null // NO tiene musculación
+  },
+  {
+    id:'s3', num:'03', nombre:'San Lorenzo 449', dir:'San Lorenzo 449, Córdoba',
+    wa:'5493518689190',
+    clases:['Musculación'],
+    muscu:{ desde:6, hasta:23 }
+  },
+  {
+    id:'s4', num:'04', nombre:'San Lorenzo 567', dir:'San Lorenzo 567, Córdoba',
+    wa:'5493518641485',
+    clases:['Musculación'],
+    muscu:{ desde:9, hasta:22 }
+  },
+  {
+    id:'s5', num:'05', nombre:'Rosario de Santa Fe 186', dir:'Rosario de Santa Fe 186, Córdoba',
+    wa:'5493518660188',
+    clases:['Musculación','Funcional','Pilates','Yoga','Spinning','Zumba','FullBody','Muay Thai'],
+    muscu:{ desde:7, hasta:22 }
+  },
+  {
+    id:'s6', num:'06', nombre:'Montevideo 362', dir:'Montevideo 362, Córdoba',
+    wa:'5493512839257',
+    clases:['Musculación'],
+    muscu:{ desde:7, hasta:22 }
+  },
+  {
+    id:'s7', num:'07', nombre:'Drago 335', dir:'Drago 335, Córdoba',
+    wa:'5493515185548',
+    clases:['Musculación','Funcional','Zumba','Boxeo'],
+    muscu:{ desde:7, hasta:22 }
+  },
+  {
+    id:'s8', num:'08', nombre:'Podestá Costa 3236', dir:'Podestá Costa 3236, Córdoba',
+    wa:'5493515190838',
+    clases:['Musculación','CrossFit','Funcional','Boxeo'],
+    muscu:{ desde:7, hasta:22 }
+  },
+];
+
+// ═══════════════════════════════════════════════════════════════
+//  HORARIOS GRUPALES POR SEDE Y DÍA (del cuadro de horarios)
+// ═══════════════════════════════════════════════════════════════
+const GRUPALES = {
+  'Chacabuco 472': {
+    'Lunes':    [{h:'9:00',c:'Stretching'},{h:'18:00',c:'FullBody'},{h:'19:00',c:'FullBody'},{h:'20:00',c:'Zumba'}],
+    'Martes':   [{h:'9:00',c:'Yoga'},{h:'17:00',c:'Stretching'},{h:'18:00',c:'FullBody'},{h:'19:00',c:'FullBody'},{h:'20:00',c:'Zumba'}],
+    'Miércoles':[{h:'9:00',c:'Stretching'},{h:'18:00',c:'FullBody'},{h:'19:00',c:'FullBody'},{h:'20:00',c:'Zumba'}],
+    'Jueves':   [{h:'9:00',c:'Yoga'},{h:'17:00',c:'Stretching'},{h:'18:00',c:'FullBody'},{h:'19:00',c:'FullBody'},{h:'20:00',c:'Zumba'}],
+    'Viernes':  [{h:'9:00',c:'Stretching'},{h:'18:00',c:'FullBody'},{h:'19:00',c:'FullBody'},{h:'20:00',c:'Zumba'}],
+  },
+  'Chacabuco 560': {
+    'Lunes':    [{h:'9:00',c:'CrossFit'},{h:'10:00',c:'Funcional'},{h:'11:00',c:'CrossFit'},{h:'17:00',c:'CrossFit'},{h:'18:00',c:'CrossFit/Funcional'},{h:'19:00',c:'CrossFit/Funcional'},{h:'20:00',c:'CrossFit/CrossFun'},{h:'21:00',c:'CrossFit'}],
+    'Martes':   [{h:'9:00',c:'CrossFit'},{h:'10:00',c:'Funcional'},{h:'11:00',c:'CrossFit'},{h:'17:00',c:'CrossFit'},{h:'18:00',c:'CrossFit/Funcional'},{h:'19:00',c:'CrossFit/Funcional'},{h:'20:00',c:'CrossFit/CrossFun'},{h:'21:00',c:'CrossFit'}],
+    'Miércoles':[{h:'9:00',c:'CrossFit'},{h:'10:00',c:'Funcional'},{h:'11:00',c:'CrossFit'},{h:'17:00',c:'CrossFit'},{h:'18:00',c:'CrossFit/Funcional'},{h:'19:00',c:'CrossFit/Funcional'},{h:'20:00',c:'CrossFit/CrossFun'},{h:'21:00',c:'CrossFit'}],
+    'Jueves':   [{h:'9:00',c:'CrossFit'},{h:'10:00',c:'Funcional'},{h:'11:00',c:'CrossFit'},{h:'17:00',c:'CrossFit'},{h:'18:00',c:'CrossFit/Funcional'},{h:'19:00',c:'CrossFit/Funcional'},{h:'20:00',c:'CrossFit/CrossFun'},{h:'21:00',c:'CrossFit'}],
+    'Viernes':  [{h:'9:00',c:'CrossFit'},{h:'10:00',c:'Funcional'},{h:'11:00',c:'CrossFit'},{h:'17:00',c:'CrossFit'},{h:'18:00',c:'CrossFit/Funcional'},{h:'19:00',c:'CrossFit/Funcional'},{h:'20:00',c:'CrossFit/CrossFun'},{h:'21:00',c:'CrossFit'}],
+  },
+  'Rosario de Santa Fe 186': {
+    'Lunes':    [{h:'8:00',c:'Funcional'},{h:'9:00',c:'Pilates'},{h:'16:00',c:'Funcional'},{h:'17:00',c:'Spinning/Zumba'},{h:'18:00',c:'Pilates-Gaptramp'},{h:'19:00',c:'FullBody'},{h:'20:00',c:'Zumba/Spinning'},{h:'21:00',c:'Muay Thai'}],
+    'Martes':   [{h:'10:30',c:'Yoga'},{h:'16:00',c:'Minitramp'},{h:'17:00',c:'SpinnAbs'},{h:'18:00',c:'Full Glúteo'},{h:'19:00',c:'FullBody'},{h:'20:00',c:'Funcional'},{h:'21:00',c:'Muay Thai'}],
+    'Miércoles':[{h:'8:00',c:'Funcional'},{h:'9:00',c:'Pilates'},{h:'16:00',c:'Funcional'},{h:'17:00',c:'Spinning/Zumba'},{h:'18:00',c:'Pilates-Gaptramp'},{h:'19:00',c:'FullBody'},{h:'20:00',c:'Zumba/Spinning'},{h:'21:00',c:'Muay Thai'}],
+    'Jueves':   [{h:'10:30',c:'Yoga'},{h:'16:00',c:'Minitramp'},{h:'17:00',c:'SpinnAbs'},{h:'18:00',c:'Full Glúteo'},{h:'19:00',c:'FullBody'},{h:'20:00',c:'Funcional'},{h:'21:00',c:'Muay Thai'}],
+    'Viernes':  [{h:'8:00',c:'Funcional'},{h:'9:00',c:'Pilates'},{h:'16:00',c:'Funcional'},{h:'17:00',c:'Spinning/Zumba'},{h:'18:00',c:'Pilates-Gaptramp'},{h:'19:00',c:'FullBody'},{h:'20:00',c:'Zumba/Spinning'}],
+  },
+  'Podestá Costa 3236': {
+    'Lunes':    [{h:'7:00',c:'Cross-Funcional'},{h:'8:30',c:'Boxeo'},{h:'9:00',c:'Cross-Funcional'},{h:'10:00',c:'Funcional'},{h:'16:00',c:'Cross-Funcional'},{h:'18:00',c:'Funcional'},{h:'18:30',c:'Boxeo'},{h:'19:00',c:'Cross-Funcional'},{h:'19:30',c:'Boxeo'},{h:'20:00',c:'Cross-Funcional'},{h:'21:00',c:'Cross-Funcional'}],
+    'Martes':   [{h:'9:00',c:'Cross-Funcional'},{h:'10:00',c:'Funcional'},{h:'16:00',c:'Cross-Funcional'},{h:'17:00',c:'Cross-Funcional'},{h:'18:00',c:'Cross-Fun/Boxeo'},{h:'19:00',c:'Cross-Fun/Boxeo'},{h:'20:00',c:'Cross-Funcional'},{h:'21:00',c:'Cross-Funcional'}],
+    'Miércoles':[{h:'7:00',c:'Cross-Funcional'},{h:'8:30',c:'Boxeo'},{h:'9:00',c:'Cross-Funcional'},{h:'10:00',c:'Funcional'},{h:'16:00',c:'Cross-Funcional'},{h:'18:00',c:'Funcional'},{h:'18:30',c:'Boxeo'},{h:'19:00',c:'Cross-Funcional'},{h:'19:30',c:'Boxeo'},{h:'20:00',c:'Cross-Funcional'},{h:'21:00',c:'Cross-Funcional'}],
+    'Jueves':   [{h:'9:00',c:'Cross-Funcional'},{h:'10:00',c:'Funcional'},{h:'16:00',c:'Cross-Funcional'},{h:'17:00',c:'Cross-Funcional'},{h:'18:00',c:'Cross/Boxeo'},{h:'19:00',c:'Cross-Fun/Boxeo'},{h:'20:00',c:'Cross-Funcional'},{h:'21:00',c:'Cross-Funcional'}],
+    'Viernes':  [{h:'7:00',c:'Cross-Funcional'},{h:'8:30',c:'Boxeo'},{h:'9:00',c:'Cross-Funcional'},{h:'10:00',c:'Cross-Funcional'},{h:'16:00',c:'Cross-Funcional'},{h:'17:30',c:'Boxeo'},{h:'18:00',c:'Funcional'},{h:'19:00',c:'Cross-Funcional'},{h:'19:30',c:'Boxeo'},{h:'20:00',c:'Cross-Funcional'},{h:'21:00',c:'Cross-Funcional'}],
+    'Sábado':   [{h:'9:00',c:'Cross-Funcional'},{h:'10:00',c:'Cross-Funcional'}],
+  },
+  'Drago 335': {
+    'Lunes':    [{h:'19:00',c:'Funcional'},{h:'20:00',c:'Funcional'}],
+    'Martes':   [{h:'19:00',c:'Zumba'},{h:'20:15',c:'Boxeo'}],
+    'Miércoles':[{h:'19:00',c:'Funcional'},{h:'20:00',c:'Funcional'}],
+    'Jueves':   [{h:'19:00',c:'Zumba'},{h:'20:15',c:'Boxeo'}],
+    'Viernes':  [{h:'19:00',c:'Funcional'},{h:'20:00',c:'Funcional'}],
+  },
+};
+
+// Keywords por clase para matchear slots
+const CLASE_KEYS = {
+  'Funcional':   ['funcional','cross-funcional','cross fun','crossfun'],
+  'CrossFit':    ['crossfit','cross-funcional','crossfun','cross fun'],
+  'Yoga':        ['yoga'],
+  'Pilates':     ['pilates'],
+  'Zumba':       ['zumba'],
+  'Spinning':    ['spinning','spinnabs'],
+  'FullBody':    ['fullbody','full body','full glúteo','full gluteo'],
+  'Stretching':  ['stretching'],
+  'Boxeo':       ['boxeo','cross-fun/boxeo','cross/boxeo'],
+  'Muay Thai':   ['muay thai','muay thay'],
+};
+
+const DIAS = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+
+// Genera los próximos 14 días con fecha completa
+function generarProximosDias() {
+  const NOMBRES = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const MESES   = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const hoy  = new Date();
+  const dias = [];
+  for (let i = 1; i <= 14; i++) {
+    const f = new Date(hoy);
+    f.setDate(hoy.getDate() + i);
+    const nom = NOMBRES[f.getDay()];
+    if (!DIAS.includes(nom)) continue; // solo Lun-Sab
+    dias.push({
+      nombre:   nom,
+      label:    `${nom} ${f.getDate()}`,
+      completo: `${nom} ${f.getDate()} de ${MESES[f.getMonth()]}`,
+      fecha:    f
+    });
+  }
+  return dias;
+}
+let DIAS_DISPONIBLES = [];
+
+// ═══════════════════════════════════════════════════════════════
+//  ESTADO GLOBAL
+// ═══════════════════════════════════════════════════════════════
+const R = { clase:'', sedeNombre:'', sedeWA:'', dia:'', horario:'' };
+
+// ═══════════════════════════════════════════════════════════════
+//  PASO 1 — CLASE
+// ═══════════════════════════════════════════════════════════════
+function pickClase(card, nombre) {
+  document.querySelectorAll('.clase-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  R.clase = nombre;
+  setTimeout(() => goTo(2), 260);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PASO 2 — SEDE (filtrada por clase)
+// ═══════════════════════════════════════════════════════════════
+function renderSedes() {
+  document.getElementById('ctxClase1').textContent = R.clase;
+  R.sedeNombre = ''; R.sedeWA = '';
+  const btn = document.getElementById('btnSede');
+  btn.classList.remove('show');
+
+  const grid = document.getElementById('sedesGrid');
+  grid.innerHTML = '';
+
+  // Filtrar sedes que tienen la clase elegida
+  const sedesFiltradas = SEDES.filter(s => claseEnSede(R.clase, s));
+
+  if (sedesFiltradas.length === 0) {
+    grid.innerHTML = `<div style="padding:24px;color:var(--muted);font-size:14px">No hay sedes disponibles para esta clase actualmente.</div>`;
+    return;
+  }
+
+  sedesFiltradas.forEach(s => {
+    const d = document.createElement('div');
+    d.className = 'sede-card';
+    d.id = 'sc-' + s.id;
+    d.onclick = () => pickSede(s);
+    d.innerHTML = `
+      <div class="sede-chk">✓</div>
+      <div class="sede-n">${s.num}</div>
+      <div class="sede-title">${s.nombre}</div>
+      <div class="sede-addr">📍 ${s.dir}</div>
+      <div class="sede-tags">${s.clases.map(c=>`<span class="stag">${c}</span>`).join('')}</div>`;
+    grid.appendChild(d);
+  });
+}
+
+function claseEnSede(clase, sede) {
+  // Musculación: todas menos Chacabuco 560
+  if (clase === 'Musculación') return sede.muscu !== null;
+  // CrossFit: solo sedes con CrossFit en su lista
+  return sede.clases.some(c => {
+    const keys = CLASE_KEYS[clase] || [clase.toLowerCase()];
+    return keys.some(k => c.toLowerCase().includes(k)) || c === clase;
+  });
+}
+
+function pickSede(s) {
+  document.querySelectorAll('.sede-card').forEach(c => c.classList.remove('sel'));
+  document.getElementById('sc-' + s.id).classList.add('sel');
+  R.sedeNombre = s.nombre;
+  R.sedeWA     = s.wa;
+  const btn = document.getElementById('btnSede');
+  btn.classList.add('show');
+  btn.textContent = `Ver horarios de ${s.nombre} →`;
+  setTimeout(() => btn.scrollIntoView({behavior:'smooth',block:'nearest'}), 100);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PASO 3 — HORARIO
+// ═══════════════════════════════════════════════════════════════
+function renderHorario() {
+  document.getElementById('ctxClase2').textContent = R.clase;
+  document.getElementById('ctxSede2').textContent  = R.sedeNombre;
+  R.dia = ''; R.horario = '';
+  document.getElementById('btnHorario').classList.remove('show');
+
+  const inner = document.getElementById('horarioInner');
+  inner.innerHTML = '';
+
+  if (R.clase === 'Musculación') {
+    renderMusculacion(inner);
+  } else {
+    renderGrupal(inner);
+  }
+}
+
+// ── MUSCULACIÓN: día → hora por hora ──────────────────────────
+function renderMusculacion(el) {
+  const sede = SEDES.find(s => s.nombre === R.sedeNombre);
+  const cfg  = sede ? sede.muscu : null;
+  if (!cfg) { el.innerHTML = '<p style="color:var(--muted)">Esta sede no tiene musculación disponible.</p>'; return; }
+
+  // Generar array de horas
+  const horas = [];
+  for (let h = cfg.desde; h <= cfg.hasta; h++) {
+    horas.push(h.toString().padStart(2,'0') + ':00');
+  }
+
+  el.innerHTML = `
+    <p class="muscu-intro">
+      Musculación disponible de <strong>${cfg.desde.toString().padStart(2,'0')}:00</strong> a <strong>${cfg.hasta}:00 hs</strong>.<br>
+      Elegí el día y el horario en que querés venir.
+    </p>
+    <div style="margin-bottom:24px">
+      <div style="font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px">1. Elegí el día</div>
+      <div class="dias-tabs" id="dtMuscu">
+        ${(()=>{ DIAS_DISPONIBLES=generarProximosDias(); return DIAS_DISPONIBLES; })().map((d,i)=>`<div class="dia-tab" onclick="selDiaMuscu(this,${i})">${d.label}</div>`).join('')}
+      </div>
+    </div>
+    <div id="horasWrap" style="display:none">
+      <div style="font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px">2. Elegí el horario</div>
+      <div class="horas-grid">
+        ${horas.map(h=>`
+          <div class="hora-pill" onclick="selHora(this,'${h}')">
+            <span class="hp-h">${h}</span>
+            <span class="hp-s">hs</span>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function selDiaMuscu(el, idx) {
+  document.querySelectorAll('#dtMuscu .dia-tab').forEach(d => d.classList.remove('active'));
+  el.classList.add('active');
+  const diaObj = DIAS_DISPONIBLES[idx];
+  R.dia = diaObj.completo;  // "Lunes 5 de mayo"
+  R.diaNombre = diaObj.nombre; // "Lunes" para filtrar grupales
+  R.horario = '';
+  document.querySelectorAll('.hora-pill').forEach(p => p.classList.remove('sel'));
+  document.getElementById('horasWrap').style.display = 'block';
+  document.getElementById('btnHorario').classList.remove('show');
+}
+
+function selHora(el, hora) {
+  document.querySelectorAll('.hora-pill').forEach(p => p.classList.remove('sel'));
+  el.classList.add('sel');
+  R.horario = hora;
+  const btn = document.getElementById('btnHorario');
+  btn.classList.add('show');
+  btn.textContent = `Continuar — ${R.dia} ${R.horario} hs →`;
+  setTimeout(() => btn.scrollIntoView({behavior:'smooth',block:'nearest'}), 100);
+}
+
+// ── CLASES GRUPALES: día → slots de la clase ──────────────────
+function renderGrupal(el) {
+  const horariosSede = GRUPALES[R.sedeNombre];
+
+  if (!horariosSede) {
+    el.innerHTML = `
+      <div style="padding:20px;border:1px solid var(--border);border-radius:2px;color:var(--muted);font-size:13px;line-height:1.8">
+        📋 Los horarios de esta sede están siendo cargados.<br>
+        Podés reservar igual y la sede te confirma el horario por WhatsApp.
+        <br><br>
+        <button class="btn-lime" style="font-size:13px;padding:12px 24px"
+          onclick="R.dia='A confirmar';R.horario='A confirmar';
+            document.getElementById('btnHorario').classList.add('show');
+            document.getElementById('btnHorario').textContent='Continuar →'">
+          Continuar sin elegir horario
+        </button>
+      </div>`;
+    return;
+  }
+
+  // Filtrar próximos 14 días que tienen la clase elegida
+  DIAS_DISPONIBLES = generarProximosDias();
+  const keys   = CLASE_KEYS[R.clase] || [R.clase.toLowerCase()];
+  const diasOk = DIAS_DISPONIBLES.filter(d => {
+    const slots = horariosSede[d.nombre] || [];
+    return slots.some(s => keys.some(k => s.c.toLowerCase().includes(k)));
+  });
+
+  if (diasOk.length === 0) {
+    el.innerHTML = `<p style="color:var(--muted);font-size:13px">No encontramos ${R.clase} en esta sede. Probá elegir otra sede.</p>`;
+    return;
+  }
+
+  el.innerHTML = `
+    <div style="margin-bottom:24px">
+      <div style="font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px">1. Elegí el día</div>
+      <div class="dias-tabs" id="dtGrupal">
+        ${diasOk.map(d=>`<div class="dia-tab" onclick="selDiaGrupal(this,'${d.nombre}','${d.completo}')">${d.label}</div>`).join('')}
+      </div>
+    </div>
+    <div id="slotsWrap"></div>`;
+}
+
+function selDiaGrupal(el, diaNombre, diaCompleto) {
+  document.querySelectorAll('#dtGrupal .dia-tab').forEach(d => d.classList.remove('active'));
+  el.classList.add('active');
+  R.dia = diaCompleto; R.diaNombre = diaNombre; R.horario = '';
+  document.getElementById('btnHorario').classList.remove('show');
+
+  const keys  = CLASE_KEYS[R.clase] || [R.clase.toLowerCase()];
+  const slots = (GRUPALES[R.sedeNombre][diaNombre] || []).filter(s =>
+    keys.some(k => s.c.toLowerCase().includes(k))
+  );
+
+  const wrap = document.getElementById('slotsWrap');
+  if (!slots.length) {
+    wrap.innerHTML = `<p class="no-slot">No hay ${R.clase} el ${dia} en esta sede.</p>`;
+    return;
+  }
+
+  wrap.innerHTML = `
+    <div style="font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px">2. Elegí el horario</div>
+    <div class="slots-wrap">
+      ${slots.map(s=>`
+        <div class="slot-pill" onclick="selSlot(this,'${s.h}','${s.c}')">
+          <span class="sp-hora">${s.h}</span>
+          <span class="sp-clase">${s.c}</span>
+        </div>`).join('')}
+    </div>`;
+}
+
+function selSlot(el, hora, clase) {
+  document.querySelectorAll('.slot-pill').forEach(p => p.classList.remove('sel'));
+  el.classList.add('sel');
+  R.horario = hora;
+  const btn = document.getElementById('btnHorario');
+  btn.classList.add('show');
+  btn.textContent = `Continuar — ${R.dia} ${hora} hs →`;
+  setTimeout(() => btn.scrollIntoView({behavior:'smooth',block:'nearest'}), 100);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PASO 4 — RESUMEN
+// ═══════════════════════════════════════════════════════════════
+function renderResumen() {
+  document.getElementById('sumC').textContent = R.clase;
+  document.getElementById('sumS').textContent = R.sedeNombre;
+  document.getElementById('sumD').textContent = R.dia;
+  document.getElementById('sumH').textContent = R.horario + ' hs';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  NAVEGACIÓN
+// ═══════════════════════════════════════════════════════════════
+function goTo(n) {
+  [1,2,3,4].forEach(i => {
+    document.getElementById('tab'+i).className =
+      'step-tab' + (i < n ? ' done' : i === n ? ' active' : '');
+  });
+  document.getElementById('stepClase').style.display   = n===1 ? 'block' : 'none';
+  document.getElementById('stepSede').style.display    = n===2 ? 'block' : 'none';
+  document.getElementById('stepHorario').style.display = n===3 ? 'block' : 'none';
+  document.getElementById('stepForm').style.display    = n===4 ? 'block' : 'none';
+  document.getElementById('stepSuccess').style.display = 'none';
+
+  if (n===2) renderSedes();
+  if (n===3) renderHorario();
+  if (n===4) renderResumen();
+
+  document.getElementById('reservar').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SUBMIT — WhatsApp + Google Calendar
+// ═══════════════════════════════════════════════════════════════
+function enviar(e) {
+  e.preventDefault();
+  const nombre   = document.getElementById('fn').value.trim();
+  const apellido = document.getElementById('fa').value.trim();
+  const wapp     = document.getElementById('fw').value.trim();
+  const dni      = document.getElementById('fd').value.trim();
+  const btn      = document.getElementById('sbtn');
+  btn.textContent = '⏳ Confirmando...';
+  btn.disabled = true;
+
+  // Mensaje WhatsApp para la sede
+  const msgWA = encodeURIComponent(
+    `🔔 *NUEVA RESERVA — Clase de Prueba BestClub*\n\n` +
+    `👤 *Nombre:* ${nombre} ${apellido}\n` +
+    `🪪 *DNI:* ${dni}\n` +
+    `📱 *WhatsApp:* ${wapp}\n` +
+    `💪 *Clase:* ${R.clase}\n` +
+    `📅 *Día:* ${R.dia}\n` +
+    `⏰ *Horario:* ${R.horario} hs\n` +
+    `📍 *Sede:* ${R.sedeNombre}\n\n` +
+    `_Reserva recibida desde la landing de BestClub_`
+  );
+  const waUrl = `https://wa.me/${R.sedeWA}?text=${msgWA}`;
+
+  // Enviar a Google Calendar + Sheets
+  // Usamos un iframe oculto para evitar el bloqueo CORS del navegador
+  const iframeId = 'gcal-sender';
+  let iframe = document.getElementById(iframeId);
+  if (!iframe) {
+    iframe = document.createElement('iframe');
+    iframe.id = iframeId;
+    iframe.name = iframeId;
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+  }
+  const tempForm = document.createElement('form');
+  tempForm.method = 'POST';
+  tempForm.action = SCRIPT_URL;
+  tempForm.target = iframeId;
+  tempForm.style.display = 'none';
+  const campos = {
+    nombre:   `${nombre} ${apellido}`,
+    dni:      dni,
+    whatsapp: wapp,
+    clase:    R.clase,
+    dia:      R.dia,
+    horario:  R.horario,
+    sede:     R.sedeNombre
+  };
+  Object.keys(campos).forEach(k => {
+    const input = document.createElement('input');
+    input.type  = 'hidden';
+    input.name  = k;
+    input.value = campos[k];
+    tempForm.appendChild(input);
+  });
+  document.body.appendChild(tempForm);
+  tempForm.submit();
+  setTimeout(() => {
+    document.body.removeChild(tempForm);
+  }, 3000);
+
+  setTimeout(() => {
+    ['stepClase','stepSede','stepHorario','stepForm'].forEach(id =>
+      document.getElementById(id).style.display = 'none'
+    );
+    document.getElementById('stepSuccess').style.display = 'block';
+    document.getElementById('sDesc').textContent =
+      `¡Listo, ${nombre}! Tu reserva de ${R.clase} el ${R.dia} a las ${R.horario} hs en ${R.sedeNombre} fue registrada. La sede te va a escribir por WhatsApp para confirmarte.`;
+    document.getElementById('waLink').href = waUrl;
+    [1,2,3,4].forEach(i => document.getElementById('tab'+i).className = 'step-tab done');
+    if (/Android|iPhone|iPad/i.test(navigator.userAgent)) {
+      setTimeout(() => window.open(waUrl,'_blank'), 700);
+    }
+  }, 1500);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════════════════════════
+window.addEventListener('scroll', () => {
+  document.getElementById('topNav').style.boxShadow =
+    scrollY > 20 ? '0 4px 40px rgba(0,0,0,.6)' : 'none';
+});
+document.querySelectorAll('a[href^="#"]').forEach(a =>
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth',block:'start'}); }
+  })
+);
+</script>
+</body>
+</html>
