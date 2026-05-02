@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Que queres entrenar hoy? — Best Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--p:#B6FF00;--bg:#0A0A0A;--bg3:#181818;--card:#141414;--bdr:#1e1e1e;--txt:#FFF;--mut:#777;--dan:#FF4444;--gld:#FFD700;--rad:16px;--rads:10px;--tr:.3s cubic-bezier(.4,0,.2,1);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--txt);font-family:'Montserrat',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+#app{min-height:100vh;max-width:480px;margin:0 auto;}
+.screen{display:none;min-height:100vh;flex-direction:column;animation:fu .38s ease forwards;}
+.screen.active{display:flex;}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+/* PROGRESS */
+.pw{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:3px;background:var(--bdr);z-index:200;}
+.pf{height:100%;background:var(--p);transition:width .5s ease;box-shadow:0 0 8px var(--p);}
+/* NAV */
+.tnav{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 10px;position:sticky;top:3px;background:var(--bg);z-index:50;}
+.gb{display:flex;align-items:center;gap:8px;}
+.glo{width:32px;height:32px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:#000;}
+.gnm{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mut);}
+.slbl{font-size:10px;font-weight:700;color:var(--mut);letter-spacing:1px;}
+/* BUTTONS */
+.btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:16px 24px;border:none;border-radius:var(--rad);font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:var(--tr);}
+.btnp{background:var(--p);color:#000;}
+.btnp:active{opacity:.88;}
+.btnp:hover{box-shadow:0 6px 24px rgba(182,255,0,.3);}
+.btns{background:transparent;color:var(--mut);border:1.5px solid var(--bdr);}
+.btns:hover{border-color:var(--mut);color:var(--txt);}
+.btnb{display:flex;align-items:center;justify-content:center;width:52px;height:52px;background:var(--card);border:1.5px solid var(--bdr);border-radius:var(--rads);cursor:pointer;flex-shrink:0;}
+/* WELCOME */
+.hero{flex:1;display:flex;flex-direction:column;justify-content:center;padding:52px 28px 32px;position:relative;overflow:hidden;}
+.hglow{position:absolute;top:-80px;right:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(182,255,0,.1) 0%,transparent 70%);pointer-events:none;}
+.htag{display:inline-flex;align-items:center;gap:6px;background:rgba(182,255,0,.1);border:1px solid rgba(182,255,0,.22);border-radius:100px;padding:4px 12px;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--p);text-transform:uppercase;margin-bottom:18px;width:fit-content;}
+.htag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--p);box-shadow:0 0 6px var(--p);}
+.hh1{font-family:'Bebas Neue',sans-serif;font-size:clamp(46px,13vw,72px);line-height:.92;margin-bottom:18px;position:relative;z-index:1;}
+.hh1 span{color:var(--p);}
+.hsub{font-size:13px;color:var(--mut);max-width:288px;margin-bottom:26px;line-height:1.75;}
+.hfeats{display:flex;flex-direction:column;gap:8px;margin-bottom:30px;}
+.hfeat{display:flex;align-items:center;gap:10px;font-size:12px;color:rgba(255,255,255,.62);font-weight:500;}
+.hdot{width:5px;height:5px;border-radius:50%;background:var(--p);flex-shrink:0;}
+.hfoot{padding:0 28px 40px;}
+.hslg{text-align:center;font-size:11px;color:var(--mut);margin-top:12px;}
+/* PLAN */
+.shd{padding:18px 20px 12px;}
+.slb{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--p);text-transform:uppercase;margin-bottom:7px;}
+.stit{font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,8vw,38px);line-height:1.02;}
+.sdes{font-size:12px;color:var(--mut);margin-top:5px;}
+.pgrid{display:flex;flex-direction:column;gap:8px;padding:4px 20px 14px;}
+.pc{background:var(--card);border:1.5px solid var(--bdr);border-radius:var(--rad);padding:14px 16px;cursor:pointer;transition:var(--tr);display:flex;align-items:center;gap:13px;position:relative;overflow:hidden;}
+.pc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:background .2s;}
+.pc.sel{border-color:var(--p);background:rgba(182,255,0,.04);}
+.pc.sel::before{background:var(--p);}
+.pico{width:40px;height:40px;border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--p);flex-shrink:0;}
+.pc.sel .pico{background:rgba(182,255,0,.12);}
+.pinf{flex:1;}
+.pnm{font-size:13px;font-weight:700;margin-bottom:1px;}
+.pds{font-size:11px;color:var(--mut);}
+.pchk{width:20px;height:20px;border-radius:50%;border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--tr);}
+.pc.sel .pchk{background:var(--p);border-color:var(--p);}
+.pchin{width:6px;height:6px;border-radius:50%;background:#000;opacity:0;transition:opacity .2s;}
+.pc.sel .pchin{opacity:1;}
+.scta{padding:0 20px;}
+.vm{font-size:11px;color:var(--dan);text-align:center;padding:6px 20px 0;font-weight:600;min-height:20px;}
+/* SURVEY */
+.qwrap{padding:4px 20px 16px;flex:1;}
+.qnum{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--p);text-transform:uppercase;margin-bottom:5px;}
+.qtxt{font-family:'Bebas Neue',sans-serif;font-size:clamp(20px,6vw,28px);line-height:1.1;margin-bottom:16px;}
+.opts{display:flex;flex-direction:column;gap:6px;}
+.opt{background:var(--card);border:1.5px solid var(--bdr);border-radius:var(--rads);padding:12px 14px;cursor:pointer;transition:var(--tr);display:flex;align-items:center;gap:11px;width:100%;color:var(--txt);font-family:'Montserrat',sans-serif;text-align:left;}
+.opt.sel{border-color:var(--p);background:rgba(182,255,0,.05);}
+.ora{width:18px;height:18px;border-radius:50%;border:2px solid var(--bdr);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:var(--tr);}
+.opt.sel .ora{border-color:var(--p);background:var(--p);}
+.ord{width:6px;height:6px;border-radius:50%;background:#000;opacity:0;transition:opacity .2s;}
+.opt.sel .ord{opacity:1;}
+.olbl{font-size:13px;font-weight:500;}
+.snav{display:flex;gap:10px;padding:0 20px;}
+/* LOADING */
+#sl{align-items:center;justify-content:center;gap:28px;padding:40px 28px;}
+.lring{width:90px;height:90px;border-radius:50%;border:3px solid var(--bdr);border-top-color:var(--p);animation:spin 1s linear infinite;position:relative;}
+.lring::after{content:'';position:absolute;inset:8px;border-radius:50%;border:2px solid transparent;border-top-color:rgba(182,255,0,.22);animation:spin 1.7s linear infinite reverse;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ltxt{text-align:center;}
+.ltit{font-family:'Bebas Neue',sans-serif;font-size:27px;letter-spacing:1px;margin-bottom:5px;}
+.lst{font-size:12px;color:var(--mut);}
+.lsteps{display:flex;flex-direction:column;gap:10px;width:100%;max-width:270px;}
+.lstep{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mut);opacity:.3;transition:all .4s;}
+.lstep.on{opacity:1;color:var(--txt);}
+.lstep.dn{opacity:.5;color:var(--p);}
+.lsdot{width:6px;height:6px;border-radius:50%;background:var(--bdr);flex-shrink:0;transition:all .4s;}
+.lstep.on .lsdot{background:var(--p);box-shadow:0 0 7px var(--p);}
+.lstep.dn .lsdot{background:var(--p);}
+/* RESULT */
+#sr{padding:0 0 36px;}
+.rhero{background:linear-gradient(135deg,#0c1700 0%,var(--bg) 55%);padding:24px 20px 20px;border-bottom:1px solid var(--bdr);position:relative;overflow:hidden;}
+.rhero::after{content:'';position:absolute;top:-50px;right:-50px;width:220px;height:220px;background:radial-gradient(circle,rgba(182,255,0,.08) 0%,transparent 70%);}
+.rbadge{display:inline-flex;align-items:center;background:var(--p);color:#000;border-radius:100px;padding:3px 11px;font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:9px;}
+.rtit{font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,7vw,32px);line-height:1.05;margin-bottom:10px;position:relative;z-index:1;}
+.rtags{display:flex;flex-wrap:wrap;gap:5px;position:relative;z-index:1;}
+.rtag{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:3px 10px;font-size:10px;font-weight:600;color:rgba(255,255,255,.62);}
+.rbody{padding:16px 20px;display:flex;flex-direction:column;gap:13px;}
+.rsec{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rad);overflow:hidden;}
+.rshd{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--bdr);background:rgba(255,255,255,.015);}
+.rsico{width:26px;height:26px;border-radius:7px;background:rgba(182,255,0,.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--p);font-family:'Bebas Neue',sans-serif;}
+.rstit{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--p);}
+.rsbody{padding:13px 14px;}
+.rsum{font-size:12px;color:rgba(255,255,255,.7);line-height:1.75;}
+/* Day cards */
+.dc{background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--rads);margin-bottom:8px;overflow:hidden;}
+.dc:last-child{margin-bottom:0;}
+.dchd{padding:10px 12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+.dcl{display:flex;align-items:center;gap:8px;}
+.dnum{width:26px;height:26px;border-radius:6px;background:rgba(182,255,0,.1);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--p);}
+.dnm{font-size:12px;font-weight:700;}
+.dobj{font-size:10px;color:var(--mut);}
+.dtog{font-size:16px;color:var(--mut);transition:transform .3s;}
+.dc.open .dtog{transform:rotate(45deg);}
+.dcbody{display:none;padding:0 12px 12px;border-top:1px solid var(--bdr);}
+.dc.open .dcbody{display:block;}
+.blbl{font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--mut);margin:10px 0 5px;display:block;}
+.blbl.main{color:var(--p);}
+.blbl.tip{color:var(--gld);}
+.wuitem{font-size:11px;color:rgba(255,255,255,.52);padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.exrow{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.exrow:last-child{border-bottom:none;}
+.exn{width:18px;height:18px;border-radius:5px;background:rgba(182,255,0,.09);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--p);flex-shrink:0;margin-top:1px;}
+.exn.ss{background:rgba(255,140,0,.12);color:#FF8C00;}
+.exn.ds{background:rgba(255,60,60,.12);color:#FF4444;}
+.exinf{flex:1;}
+.exnm{font-size:12px;font-weight:700;margin-bottom:2px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.exdet{font-size:11px;color:var(--mut);font-weight:600;margin-bottom:3px;}
+.exnote{font-size:10px;color:rgba(255,255,255,.4);line-height:1.55;font-style:italic;}
+.expair{font-size:10px;color:rgba(255,140,0,.6);margin-top:2px;}
+.badge{padding:2px 7px;border-radius:100px;font-size:9px;font-weight:700;}
+.bss{background:rgba(255,140,0,.14);color:#FF8C00;border:1px solid rgba(255,140,0,.22);}
+.bds{background:rgba(255,60,60,.14);color:#FF4444;border:1px solid rgba(255,60,60,.22);}
+.tipbox{background:rgba(255,215,0,.04);border:1px solid rgba(255,215,0,.12);border-radius:8px;padding:10px 12px;font-size:11px;color:rgba(255,215,0,.85);line-height:1.65;margin-top:10px;}
+.warnbox{background:rgba(255,68,68,.04);border:1px solid rgba(255,68,68,.18);border-radius:var(--rads);padding:12px 14px;font-size:11px;color:rgba(255,110,110,.85);line-height:1.7;}
+.goldbox{background:rgba(255,215,0,.03);border:1px solid rgba(255,215,0,.12);border-radius:var(--rads);padding:12px 14px;font-size:11px;color:rgba(255,215,0,.7);line-height:1.7;}
+.phcard{background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--rads);padding:12px;margin-bottom:8px;}
+.phcard:last-child{margin-bottom:0;}
+.phhd{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.phnum{background:var(--p);color:#000;font-family:'Bebas Neue',sans-serif;font-size:12px;padding:1px 7px;border-radius:4px;}
+.phnm{font-size:13px;font-weight:700;}
+.phdur{font-size:10px;color:var(--mut);margin-bottom:5px;}
+.phdesc{font-size:11px;color:rgba(255,255,255,.62);line-height:1.6;}
+.recul{list-style:none;}
+.recul li{padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;color:rgba(255,255,255,.72);display:flex;gap:7px;line-height:1.5;}
+.recul li:last-child{border-bottom:none;}
+.recul li::before{content:'>';color:var(--p);font-weight:700;flex-shrink:0;}
+.rcta{padding:0 20px;display:flex;flex-direction:column;gap:8px;}
+.gftr{text-align:center;padding:16px;font-size:10px;color:var(--mut);}
+.mt{margin-top:10px;}
+/* PDF button loading state */
+.btnp.loading{opacity:.7;pointer-events:none;}
+.btnp.loading::after{content:'';display:inline-block;width:14px;height:14px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .8s linear infinite;margin-left:6px;}
+</style>
+</head>
+<body>
+<div class="pw"><div class="pf" id="pf" style="width:0%"></div></div>
+<div id="app">
+
+<!-- WELCOME -->
+<div id="sw" class="screen active">
+  <div class="hero">
+    <div class="hglow"></div>
+    <div class="htag">Sistema inteligente</div>
+    <h1 class="hh1">QUE<br><span>QUERES</span><br>ENTRENAR<br>HOY?</h1>
+    <p class="hsub" id="hSub">Responde 6 preguntas y recibe una rutina profesional personalizada al instante.</p>
+    <div class="hfeats">
+      <div class="hfeat"><span class="hdot"></span>Rutina personalizada con ejercicios reales</div>
+      <div class="hfeat"><span class="hdot"></span>PDF profesional descargable al instante</div>
+      <div class="hfeat"><span class="hdot"></span>Planes del dia hasta 12 meses</div>
+    </div>
+  </div>
+  <div class="hfoot">
+    <button class="btn btnp" onclick="goS('splan')">EMPEZAR AHORA <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+    <p class="hslg" id="hSlg"></p>
+  </div>
+</div>
+
+<!-- PLAN -->
+<div id="splan" class="screen">
+  <div class="tnav"><div class="gb"><div class="glo" id="nl1"></div><span class="gnm" id="nn1"></span></div><span class="slbl">PASO 1 DE 7</span></div>
+  <div class="shd"><div class="slb">Tipo de plan</div><h2 class="stit">ELEGI TU PLANIFICACION</h2><p class="sdes">Cuanto tiempo queres abarcar con tu plan.</p></div>
+  <div class="pgrid" id="pgrid"></div>
+  <div class="scta"><button class="btn btnp" onclick="nextPlan()">CONTINUAR <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div>
+  <div class="vm" id="vPlan"></div>
+</div>
+
+<!-- SURVEY -->
+<div id="ssurvey" class="screen">
+  <div class="tnav"><div class="gb"><div class="glo" id="nl2"></div><span class="gnm" id="nn2"></span></div><span class="slbl" id="stepLbl">PASO 2 DE 7</span></div>
+  <div class="qwrap" id="qWrap"></div>
+  <div class="vm" id="vSurv"></div>
+  <div class="snav">
+    <button class="btnb" onclick="prevQ()" id="btnBack"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#777" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+    <button class="btn btnp" onclick="nextQ()" style="flex:1"><span id="nxtLbl">SIGUIENTE</span> <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div id="sl" class="screen">
+  <div class="lring"></div>
+  <div class="ltxt"><div class="ltit">GENERANDO<br>TU PLAN</div><div class="lst" id="loadSt">Analizando tus respuestas...</div></div>
+  <div class="lsteps">
+    <div class="lstep on" id="ls0"><span class="lsdot"></span>Analizando tu perfil</div>
+    <div class="lstep" id="ls1"><span class="lsdot"></span>Disenando estructura</div>
+    <div class="lstep" id="ls2"><span class="lsdot"></span>Seleccionando ejercicios</div>
+    <div class="lstep" id="ls3"><span class="lsdot"></span>Preparando documento PDF</div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="sr" class="screen">
+  <div class="tnav" style="border-bottom:1px solid var(--bdr)"><div class="gb"><div class="glo" id="nl3"></div><span class="gnm" id="nn3"></span></div><span class="slbl">TU PLAN</span></div>
+  <div id="resContent"></div>
+  <div class="rcta">
+    <button class="btn btnp" id="btnPDF" onclick="downloadPDF()">DESCARGAR PDF</button>
+    <button class="btn btns mt" onclick="restart()">Crear otro plan</button>
+  </div>
+  <div class="gftr" id="gFtr"></div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+/* ==============================================
+   BRAND CONFIG — editar aqui para personalizar
+   ============================================== */
+const BRAND = {
+  gymName: "Best Club",
+  slogan: "Entrana con inteligencia. Progresa con metodo.",
+  primaryColor: "#B6FF00",
+  initials: "BC",
+  contactText: "Consulta con un profesor de sala antes de modificar tu plan.",
+  footerText: "Sistema inteligente de entrenamiento — Best Club"
+};
+
+/* Apply brand */
+document.documentElement.style.setProperty('--p', BRAND.primaryColor);
+['nl1','nl2','nl3'].forEach(id=>{ const e=document.getElementById(id); if(e) e.textContent=BRAND.initials; });
+['nn1','nn2','nn3'].forEach(id=>{ const e=document.getElementById(id); if(e) e.textContent=BRAND.gymName; });
+document.getElementById('hSlg').textContent = BRAND.slogan;
+document.getElementById('gFtr').textContent = BRAND.footerText;
+document.title = 'Que queres entrenar hoy? — ' + BRAND.gymName;
+
+/* ==============================================
+   STATE
+   ============================================== */
+let selPlan=null, curQ=0, answers={}, plan=null;
+const SCREENS = ['sw','splan','ssurvey','sl','sr'];
+
+/* ==============================================
+   LOAD jsPDF with multiple fallbacks
+   ============================================== */
+let jsPDFLib = null;
+
+function loadJsPDF(cb) {
+  if (jsPDFLib) { cb(null, jsPDFLib); return; }
+  if (window.jspdf && window.jspdf.jsPDF) {
+    jsPDFLib = window.jspdf.jsPDF;
+    cb(null, jsPDFLib); return;
+  }
+  const cdns = [
+    'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+    'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js',
+    'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',
+  ];
+  let idx = 0;
+  function tryNext() {
+    if (idx >= cdns.length) { cb(new Error('No se pudo cargar el generador de PDF. Verifica tu conexion a internet.')); return; }
+    const s = document.createElement('script');
+    s.src = cdns[idx++];
+    s.onload = () => {
+      if (window.jspdf && window.jspdf.jsPDF) {
+        jsPDFLib = window.jspdf.jsPDF;
+        cb(null, jsPDFLib);
+      } else { tryNext(); }
+    };
+    s.onerror = tryNext;
+    document.head.appendChild(s);
+  }
+  tryNext();
+}
+
+/* Pre-load on page start */
+loadJsPDF(() => {});
+
+/* ==============================================
+   PLANS
+   ============================================== */
+const PLANS = [
+  {id:'day',  ico:'HOY', nm:'Entrenamiento del dia',  ds:'Una rutina completa para hacer hoy.'},
+  {id:'week', ico:'SEM', nm:'Plan semanal',            ds:'Organizacion de 3 a 6 dias de entrenamiento.'},
+  {id:'month',ico:'MES', nm:'Plan mensual',            ds:'Un mes de entrenamiento con progresion.'},
+  {id:'3m',   ico:'3M',  nm:'Ciclo de 3 meses',        ds:'Adaptacion, progresion e intensificacion.'},
+  {id:'4m',   ico:'4M',  nm:'Ciclo de 4 meses',        ds:'Proceso completo de mejora fisica.'},
+  {id:'6m',   ico:'6M',  nm:'Ciclo de 6 meses',        ds:'Plan avanzado de transformacion.'},
+  {id:'12m',  ico:'1A',  nm:'Ciclo de 12 meses',       ds:'Planificacion anual completa.'},
+];
+
+/* ==============================================
+   QUESTIONS
+   ============================================== */
+const QS = [
+  {id:'obj', txt:'Cual es tu objetivo principal?',          opts:['Bajar grasa','Ganar masa muscular','Tonificar','Aumentar fuerza','Mejorar rendimiento','Volver a entrenar','Mejorar salud general']},
+  {id:'niv', txt:'Cual es tu nivel actual?',                opts:['Principiante','Intermedio','Avanzado']},
+  {id:'dias',txt:'Cuantos dias podes entrenar por semana?', opts:['2 dias','3 dias','4 dias','5 dias','6 dias']},
+  {id:'zona',txt:'Que zona queres priorizar?',              opts:['Gluteos','Piernas','Tren superior','Abdomen y Core','Full body','Funcional','Cross training']},
+  {id:'les', txt:'Tenes alguna molestia o limitacion?',     opts:['Ninguna','Rodilla','Espalda baja','Hombro','Cadera','Cuello','Otra']},
+  {id:'tipo',txt:'Que tipo de entrenamiento preferis?',     opts:['Maquinas','Pesos libres','Funcional','HIIT','Cross training','Mixto']},
+];
+
+/* ==============================================
+   NAVIGATION
+   ============================================== */
+function goS(id) {
+  SCREENS.forEach(s => document.getElementById(s).classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+  const idx = SCREENS.indexOf(id);
+  document.getElementById('pf').style.width = Math.round((idx/(SCREENS.length-1))*100) + '%';
+}
+
+/* ==============================================
+   PLAN GRID
+   ============================================== */
+function renderPlans() {
+  document.getElementById('pgrid').innerHTML = PLANS.map(p => `
+    <div class="pc${selPlan===p.id?' sel':''}" onclick="pickPlan('${p.id}')">
+      <div class="pico">${p.ico}</div>
+      <div class="pinf"><div class="pnm">${p.nm}</div><div class="pds">${p.ds}</div></div>
+      <div class="pchk"><div class="pchin"></div></div>
+    </div>`).join('');
+}
+function pickPlan(id) { selPlan=id; renderPlans(); document.getElementById('vPlan').textContent=''; }
+function nextPlan() {
+  if (!selPlan) { document.getElementById('vPlan').textContent='Selecciona un tipo de plan para continuar.'; return; }
+  curQ=0; renderQ(); goS('ssurvey');
+}
+renderPlans();
+
+/* ==============================================
+   SURVEY
+   ============================================== */
+function renderQ() {
+  const q = QS[curQ];
+  document.getElementById('stepLbl').textContent = 'PASO '+(curQ+2)+' DE 7';
+  document.getElementById('nxtLbl').textContent = curQ===QS.length-1 ? 'GENERAR MI PLAN' : 'SIGUIENTE';
+  document.getElementById('btnBack').style.display = curQ===0 ? 'none' : 'flex';
+  document.getElementById('qWrap').innerHTML = `
+    <div class="qnum">Pregunta ${curQ+1} de ${QS.length}</div>
+    <div class="qtxt">${q.txt}</div>
+    <div class="opts">${q.opts.map(o=>`
+      <button class="opt${answers[q.id]===o?' sel':''}" onclick="pickA('${q.id}','${o.replace(/'/g,'&#39;')}')">
+        <div class="ora"><div class="ord"></div></div>
+        <span class="olbl">${o}</span>
+      </button>`).join('')}
+    </div>`;
+  document.getElementById('vSurv').textContent='';
+}
+function pickA(id,v) { answers[id]=v; renderQ(); }
+function nextQ() {
+  const q = QS[curQ];
+  if (!answers[q.id]) { document.getElementById('vSurv').textContent='Selecciona una opcion para continuar.'; return; }
+  if (curQ < QS.length-1) { curQ++; renderQ(); window.scrollTo(0,0); }
+  else { startLoad(); }
+}
+function prevQ() {
+  if (curQ > 0) { curQ--; renderQ(); window.scrollTo(0,0); }
+  else { goS('splan'); }
+}
+
+/* ==============================================
+   LOADING
+   ============================================== */
+function startLoad() {
+  goS('sl');
+  const steps = ['ls0','ls1','ls2','ls3'];
+  const msgs = ['Analizando tus respuestas...','Disenando tu planificacion...','Seleccionando ejercicios ideales...','Preparando documento PDF...'];
+  steps.forEach(s => document.getElementById(s).className = 'lstep');
+  document.getElementById('ls0').classList.add('on');
+  let i = 0;
+  const iv = setInterval(() => {
+    if (i < steps.length-1) {
+      document.getElementById(steps[i]).className = 'lstep dn';
+      i++;
+      document.getElementById(steps[i]).classList.add('on');
+      document.getElementById('loadSt').textContent = msgs[i];
+    } else {
+      clearInterval(iv);
+      setTimeout(() => {
+        plan = generatePlan({ pid:selPlan, ...answers });
+        renderResult();
+        goS('sr');
+      }, 380);
+    }
+  }, 620);
+}
+
+/* ==============================================
+   PLAN GENERATOR — VERSION PROFESIONAL COMPLETA
+   ============================================== */
+function generatePlan(ud) {
+  const { pid, obj, niv, dias, zona, les, tipo } = ud;
+  const diasN = parseInt(dias) || 3;
+  const isNov = niv === 'Principiante';
+  const isMid = niv === 'Intermedio';
+  const isAdv = niv === 'Avanzado';
+  const hasInj = les !== 'Ninguna';
+  const planNm = PLANS.find(p=>p.id===pid)?.nm || pid;
+
+  /* ===== EXERCISE LIBRARY ===== */
+  const LIB = {
+    gluteos_maq: [
+      {nm:'Hip Thrust en banco ajustable',       sets:'4', reps:'10-12', rest:'90 seg', notes:'Barra sobre cresta iliaca con foam. PAUSA OBLIGATORIA 2 seg arriba en maximo de contraccion. Pelvis en retroversion completa. Conectar mente-musculo antes de cada rep.'},
+      {nm:'Abduccion en maquina sentado',         sets:'4', reps:'20-25', rest:'45 seg', notes:'Ultimo set tecnica 21: 7 reps rango bajo + 7 reps rango alto + 7 reps completas sin bajar el peso. Mantener la tension.'},
+      {nm:'Prensa pies altos y anchos (gluteos)', sets:'4', reps:'12-15', rest:'75 seg', notes:'Pies en tercio superior de la plataforma, ancho de cadera o mayor. Rodillas siguen la linea del 2do dedo. No bloquear arriba para mantener tension.'},
+      {nm:'Patada de gluteo en polea baja',       sets:'3', reps:'15 c/lado', rest:'45 seg', notes:'Tronco fijo. Core activado para proteger lumbar. Extension de cadera sin hiperextender columna. Enfasis total en la contraccion del gluteo.'},
+      {nm:'Peso muerto rumano con mancuernas',    sets:'4', reps:'10-12', rest:'90 seg', notes:'Bisagra de cadera pura. Espalda neutral durante todo el recorrido. Bajar SOLO hasta sentir tension en femoral, no mas. No es un estiramiento, es una bisagra.'},
+      {nm:'Curl femoral tumbado en maquina',      sets:'3', reps:'12-15', rest:'60 seg', notes:'Tempo 2-1-2 (2 seg bajar, 1 seg pausa, 2 seg subir). Punta del pie en flexion dorsal para mayor reclutamiento del biceps femoral.'},
+    ],
+    gluteos_lib: [
+      {nm:'Hip Thrust con barra',                 sets:'4', reps:'8-10',  rest:'90 seg', notes:'Hombros sobre banco. Barra en cresta iliaca. PAUSA 2 seg en posicion alta. Pelvis en retroversion maxima. No hiperextender lumbar. Es el ejercicio rey del gluteo.'},
+      {nm:'Sentadilla bulgara con mancuernas',    sets:'4', reps:'10 c/lado', rest:'90 seg', notes:'Empezar por la pierna mas debil. Rodilla trasera desciende cerca del suelo. Tronco ligeramente inclinado adelante para enfatizar gluteo medio y mayor.'},
+      {nm:'Peso muerto rumano con barra',         sets:'4', reps:'8-10',  rest:'90 seg', notes:'Bisagra de cadera. Espalda neutral. Barra pegada al cuerpo en todo el recorrido. Mirada al frente-abajo. Bajar hasta tension, no hasta el suelo.'},
+      {nm:'Buenos dias con barra (Good Morning)', sets:'3', reps:'10-12', rest:'75 seg', notes:'Carga moderada siempre. Bisagra de cadera pura. Rodillas levemente flexionadas. Excelente para femoral y gluteo profundo con carga axial minima.'},
+      {nm:'Hip Thrust con banda elastica',        sets:'3', reps:'15-20', rest:'60 seg', notes:'Tecnica de quemada: 5 pulsaciones en el tope de cada rep. Ultimo set: 20 reps normales + 20 pulsaciones sin bajar. Alta tension en gluteo con bajo riesgo.'},
+      {nm:'Sentadilla sumo con mancuerna',        sets:'3', reps:'12-15', rest:'75 seg', notes:'Apertura de pies 45 grados o mas. Rodillas siguen la punta del pie en todo momento. Empujar el suelo al subir, apretar gluteos en el tope.'},
+    ],
+    piernas_maq: [
+      {nm:'Prensa de piernas',                    sets:'4', reps:'12-15', rest:'90 seg', notes:'Rango completo sin bloquear rodillas arriba. Ultimo set DROPSET: al fallo bajar 30% de carga y continuar sin descanso hasta nuevo fallo.'},
+      {nm:'Extension de cuadriceps',              sets:'4', reps:'15-20', rest:'60 seg', notes:'PAUSA 2 seg en la posicion alta (extension completa). Excentrico controlado de 3 seg. Punta del pie en flexion dorsal. Tecnica de tempo maximiza la hipertrofia.'},
+      {nm:'Curl femoral tumbado',                 sets:'4', reps:'12-15', rest:'60 seg', notes:'Tempo 2-1-2. Punta del pie en flexion dorsal para mayor reclutamiento del biceps femoral. Control total en la fase excentrica.'},
+      {nm:'Leg press unilateral',                 sets:'3', reps:'12 c/lado', rest:'75 seg', notes:'Siempre empezar por la pierna mas debil. Corrige desequilibrios entre hemicuerpos. Rango completo sin bloqueo.'},
+      {nm:'Abduccion en maquina',                 sets:'3', reps:'20-25', rest:'45 seg', notes:'Doble progresion: primero alcanzar el maximo de reps en todas las series, luego subir la carga y volver al minimo de reps.'},
+      {nm:'Gemelos en prensa sentado',            sets:'4', reps:'20-25', rest:'45 seg', notes:'Rango COMPLETO. Pausa de 1 seg abajo en maximo estiramiento. El solteo tiene mala reputacion: el gemelo responde muy bien al estiramiento prolongado.'},
+    ],
+    piernas_lib: [
+      {nm:'Sentadilla libre con barra',           sets:'5', reps:'6-8',   rest:'2 min',  notes:'Profundidad paralela o mas. Rodillas sobre la punta del pie. Espalda neutral, tronco ligeramente inclinado. Core apretado todo el tiempo. Empujar el suelo.'},
+      {nm:'Peso muerto rumano con barra',         sets:'4', reps:'8-10',  rest:'90 seg', notes:'Bisagra de cadera pura. Espalda NEUTRAL. Barra pegada al cuerpo. Solo bajar hasta tension en femoral. No es un peso muerto convencional.'},
+      {nm:'Zancada caminando con mancuernas',     sets:'3', reps:'12 c/lado', rest:'75 seg', notes:'Tronco vertical. Rodilla delantera a 90 grados al bajar. Rodilla trasera cerca del suelo. Empujar desde el talon de la pierna delantera.'},
+      {nm:'Sentadilla frontal con barra',         sets:'4', reps:'6-8',   rest:'90 seg', notes:'Mayor enfasis en cuadriceps que sentadilla trasera. Codos altos. Torax arriba. Requiere buena movilidad de tobillo y muneca.'},
+      {nm:'Step-up con mancuernas',               sets:'3', reps:'10 c/lado', rest:'60 seg', notes:'Banco a altura de rodilla. Empujar desde el TALON de la pierna sobre el banco, no desde la pierna de abajo.'},
+      {nm:'Gemelos de pie con barra',             sets:'4', reps:'20-25', rest:'45 seg', notes:'Rango completo obligatorio. Pausa en el estiramiento. El gemelo necesita tension y alto volumen para responder.'},
+    ],
+    tren_sup_maq: [
+      {nm:'Press de pecho en maquina',            sets:'4', reps:'10-12', rest:'75 seg', notes:'Retraccion escapular ANTES de cada rep. No protruir hombros hacia adelante. Ultimo set DROPSET doble: bajar 20% x2, continuar hasta fallo en cada bajada.'},
+      {nm:'Jalon al pecho en polea alta',         sets:'4', reps:'10-12', rest:'75 seg', notes:'Codos apuntando al suelo al final del recorrido. Pecho se mueve hacia la barra, no la barra hacia el pecho. Escap deprimidas y retrotraidas.'},
+      {nm:'Remo en maquina sentado (cable)',      sets:'4', reps:'10-12', rest:'75 seg', notes:'PAUSA 1 seg con escap apretadas en el tope. No balancear el tronco. Codos pegados al cuerpo para mayor activacion del dorsal.'},
+      {nm:'Press de hombros en maquina',          sets:'3', reps:'12-15', rest:'60 seg', notes:'No bloquear codos arriba. Rango controlado. Ultimo set REST-PAUSE: llegar al fallo, descansar 15 seg, hacer 3 reps mas x3 mini-series.'},
+      {nm:'Curl de biceps en polea baja',         sets:'3', reps:'12-15', rest:'60 seg', notes:'Codos fijos al cuerpo. Supinacion completa en el tope. Excentrico de 2-3 seg. La polea mantiene tension en todo el recorrido, superior a las mancuernas.'},
+      {nm:'Triceps en polea alta (cuerda)',       sets:'3', reps:'15-20', rest:'60 seg', notes:'Codos pegados al cuerpo. Extension completa separando los extremos de la cuerda al final. Muneca neutra.'},
+    ],
+    tren_sup_lib: [
+      {nm:'Press banca con barra',                sets:'4', reps:'8-10',  rest:'90 seg', notes:'Retraccion escapular y arch natural. Barra baja al pectoral inferior. Codos a 75 grados (no a 90). Pause bench opcional para avanzados.'},
+      {nm:'Remo con barra inclinado (Pendlay)',   sets:'4', reps:'8-10',  rest:'90 seg', notes:'Tronco a 45-70 grados. Codos pegados al cuerpo para dorsal, separados para trapecio. Barra toca el abdomen en cada rep. Espalda neutral.'},
+      {nm:'Dominadas (o asistidas en maquina)',   sets:'4', reps:'6-10',  rest:'2 min',  notes:'Scapular pull primero (bajar escap sin doblar codos), luego el tirón completo. Si no llega, usar banda elastica o maquina asistida. Nunca negociar tecnica.'},
+      {nm:'Press militar con barra de pie',       sets:'3', reps:'8-10',  rest:'90 seg', notes:'Core apretado, gluteos activos para proteger lumbar. Barra frente a la cara (no detras). No arquear la espalda baja al empujar.'},
+      {nm:'Curl de biceps con barra Z',           sets:'3', reps:'10-12', rest:'60 seg', notes:'Codos completamente estables al cuerpo. Solo el antebrazo se mueve. Supinacion maxima en el tope. Excentrico controlado.'},
+      {nm:'Fondos en paralelas (triceps)',        sets:'3', reps:'10-15', rest:'75 seg', notes:'Tronco VERTICAL para enfatizar triceps. Inclinado adelante = pecho. Codos no superan los 90 grados para proteger hombros.'},
+    ],
+    core: [
+      {nm:'Plancha frontal con respiracion',      sets:'3', reps:'40-50 seg', rest:'30 seg', notes:'Caderas perfectamente alineadas: ni arriba ni abajo. No hundir hombros. Respiracion DIAFRAGMATICA durante la plancha. La exhalacion forzada activa el transverso.'},
+      {nm:'Dead bug',                             sets:'3', reps:'10 c/lado', rest:'30 seg', notes:'Columna lumbar PEGADA al suelo en todo momento. Movimiento lento y controlado. Calidad absoluta sobre cantidad. Es el ejercicio de core mas efectivo para principiantes.'},
+      {nm:'Crunch en polea alta',                 sets:'3', reps:'15-20', rest:'45 seg', notes:'El movimiento es de la CAJA TORACICA hacia la pelvis. No es flexion de cadera. Foco total en la contraccion del recto abdominal. Carga suficiente para que sea exigente.'},
+      {nm:'Elevacion de piernas colgado',         sets:'3', reps:'10-15', rest:'60 seg', notes:'Evitar el balanceo del cuerpo. El movimiento comienza con retroversion pelvica. Controlado y sin momentum. Version en suelo si no hay barra.'},
+      {nm:'Pallof press en polea lateral',        sets:'3', reps:'12 c/lado', rest:'45 seg', notes:'Tension ANTI-ROTACION. La polea intenta girar tu tronco y vos resists. Fundamental para salud lumbar y transferencia atletica real.'},
+      {nm:'Rueda abdominal (ab wheel)',           sets:'3', reps:'8-12',  rest:'60 seg', notes:'Solo si hay fuerza de core suficiente. No hiperextender zona lumbar. Version de rodillas para empezar, de pie para avanzados.'},
+    ],
+    funcional: [
+      {nm:'EMOM 10 min: 8 goblet squat + 5 flexiones', sets:'-', reps:'10 rondas', rest:'resto del minuto', notes:'Si terminas antes del minuto, el tiempo restante es TU descanso. Si no completas en el minuto, reduce 1-2 reps. Registra cuantas rondas completas.'},
+      {nm:'AMRAP 8 min: 10 swing KB + 8 burpees + 6 saltos box', sets:'-', reps:'max rondas', rest:'-', notes:'Ritmo sostenible pero exigente. Registra el numero de rondas. Esta es tu marca de referencia para mejorar en sesiones futuras.'},
+      {nm:'Circuito TRX: remo + pistol squat + plancha', sets:'4', reps:'40 seg cada uno', rest:'20 seg entre ejercicios', notes:'Sin descanso entre ejercicios del mismo circuito. 1 min de descanso entre rondas. El TRX es el mejor equipo para funcional con poco espacio.'},
+      {nm:'Farmer carry con mancuernas pesadas', sets:'4', reps:'40 metros', rest:'60 seg', notes:'Mancuernas desafiantes (no livianas). Core apretado, hombros bajos y atras. No inclinarse lateralmente. Ejercicio de alta transferencia atletica.'},
+      {nm:'Turkish get-up con kettlebell',       sets:'3', reps:'3 c/lado', rest:'90 seg', notes:'Movimiento complejo de altisima transferencia. APRENDER con peso cero o muy liviano primero. Cada fase debe ser ejecutada con control absoluto.'},
+    ],
+    hiit: [
+      {nm:'Sprints en cinta: 20 seg ALL OUT / 40 seg caminata', sets:'-', reps:'10 ciclos', rest:'-', notes:'ALL OUT significa 90-95% de tu velocidad maxima. Los 40 seg de caminata son recuperacion ACTIVA. El ultimo ciclo debe ser igual de intenso que el primero.'},
+      {nm:'Tabata burpees: 20 seg / 10 seg descanso', sets:'-', reps:'8 rondas (4 min totales)', rest:'1 min entre bloques', notes:'Protocolo Tabata clasico. Maximo esfuerzo en los 20 seg. Los 10 seg son descanso TOTAL. 4 minutos que equivalen a 30 min de cardio moderado.'},
+      {nm:'Bicicleta HIIT: 30 seg maximo / 90 seg suave', sets:'-', reps:'8 ciclos', rest:'-', notes:'Resistencia ALTA durante los 30 seg de maxima intensidad. Baja mucho la resistencia para los 90 seg de recuperacion activa. Mantener el ritmo constante en los sprint.'},
+      {nm:'AMRAP 12 min: 10 mountain climbers + 8 saltos + 6 flex', sets:'-', reps:'max rondas', rest:'-', notes:'Ritmo sostenible pero desafiante. La tecnica NO puede deteriorarse por la fatiga. Si ocurre, bajar un escalon de intensidad.'},
+    ],
+    fullbody: [
+      {nm:'Sentadilla goblet con mancuerna',      sets:'4', reps:'12',    rest:'75 seg', notes:'Espalda neutral. Mancuerna sujetada verticalmente contra el pecho. Codos hacia adentro y arriba al subir. Talones en el suelo.'},
+      {nm:'Press de pecho en maquina',            sets:'3', reps:'12',    rest:'75 seg', notes:'Retraccion escapular antes de cada rep. No protruir hombros hacia adelante.'},
+      {nm:'Remo en maquina sentado',              sets:'3', reps:'12',    rest:'75 seg', notes:'Pausa con escapulas apretadas en el tope del movimiento. Core activo.'},
+      {nm:'Peso muerto rumano con mancuernas',    sets:'3', reps:'10',    rest:'90 seg', notes:'Bisagra de cadera. Espalda neutral durante todo el recorrido.'},
+      {nm:'Plancha frontal',                      sets:'3', reps:'35 seg',rest:'30 seg', notes:'Caderas perfectamente alineadas. Respiracion diafragmatica.'},
+    ],
+  };
+
+  /* ===== SELECT POOL ===== */
+  function selectPool(z, t) {
+    const zl = z.toLowerCase();
+    const tl = t.toLowerCase();
+    const useLib = tl.includes('peso') || tl.includes('libre');
+    if (zl.includes('glut'))    return useLib ? LIB.gluteos_lib  : LIB.gluteos_maq;
+    if (zl.includes('pierna'))  return useLib ? LIB.piernas_lib  : LIB.piernas_maq;
+    if (zl.includes('tren'))    return useLib ? LIB.tren_sup_lib : LIB.tren_sup_maq;
+    if (zl.includes('abdomen') || zl.includes('core')) return LIB.core;
+    if (zl.includes('funcional')) return LIB.funcional;
+    if (zl.includes('cross'))   return [...LIB.funcional, ...LIB.hiit];
+    return LIB.fullbody;
+  }
+
+  /* ===== APPLY LEVEL MODIFIERS ===== */
+  function applyLevel(exs) {
+    return exs.map((ex, i) => {
+      let e = { ...ex };
+      if (isNov) {
+        e.sets = e.sets === '-' ? '-' : '3';
+        e.notes = 'PRINCIPIANTE: ' + e.notes + ' Carga muy liviana las primeras 2 semanas. La tecnica correcta es el UNICO objetivo inicial.';
+      }
+      if (isAdv && i === 0) {
+        e.advTech = 'dropset';
+        e.notes = e.notes + ' || DROPSET: al llegar al fallo, reducir la carga un 25% SIN DESCANSO y continuar hasta nuevo fallo. Repetir 2 veces (triple dropset).';
+      }
+      if (isAdv && i === 1) {
+        e.advTech = 'superserie';
+        e.pairPrev = exs[0].nm;
+        e.notes = e.notes + ' || SUPERSERIE: ejecutar este ejercicio INMEDIATAMENTE despues del anterior, sin descanso entre ellos. Descansar 90-120 seg al completar el par.';
+      }
+      if (isMid && i === 0) {
+        e.notes = e.notes + ' || PROGRESION LINEAL: si completas TODAS las series y reps con buena tecnica, agregar 2.5kg la proxima sesion.';
+      }
+      return e;
+    });
+  }
+
+  /* ===== INJURY NOTES ===== */
+  function injNote(l) {
+    const map = {
+      'Rodilla': 'RODILLA: Evitar flexion de rodilla mayor a 90 grados con carga, impacto repetido y ejercicios que generen compresion femoropatelar (extension de cuad en algunos casos). El cuadriceps fuerte es la MEJOR proteccion para la rodilla. Priorizar rangos seguros.',
+      'Espalda baja': 'ESPALDA BAJA: Evitar peso muerto convencional con carga alta, sentadilla con barra hasta tener estabilizacion lumbar solida. Priorizar anti-extension y anti-rotacion de core. Todos los ejercicios con carga axial requieren tecnica perfecta. El core es tu faja natural.',
+      'Hombro': 'HOMBRO: Evitar press sobre la cabeza con carga alta, jalones detras del cuello y rotaciones internas forzadas. Fortalecer manguito rotador (rotacion externa con polea, face pull) es OBLIGATORIO. Siempre dentro del rango de movilidad indoloro.',
+      'Cadera': 'CADERA: Evitar rangos extremos de flexion de cadera con carga. Trabajar siempre en rango indoloro. Fortalecer abductores y rotadores externos es clave. Calentamiento extendido de cadera (10+ min) antes de cada sesion.',
+      'Cuello': 'CUELLO: Evitar jalon detras de la nuca, encogimientos con carga alta y cualquier tension cervical directa. Mantener posicion neutral siempre. Stretching cervical SUAVE post-entrenamiento obligatorio.',
+      'Otra': 'LIMITACION ESPECIFICA: Informar a los profesores de sala sobre tu limitacion antes de comenzar. Trabajar siempre en el rango indoloro. Si aparece dolor agudo o irradiado, detener inmediatamente y consultar con un profesional de salud.',
+    };
+    return map[l] || '';
+  }
+
+  /* ===== DAY THEMES ===== */
+  const dayThemes = {
+    'Gluteos': [
+      {nm:'Gluteos + Femorales',          obj:'Fuerza posterior y activacion glutea maxima'},
+      {nm:'Gluteos + Abductores',         obj:'Amplitud de cadera y definicion lateral'},
+      {nm:'Piernas completas con foco gluteo', obj:'Volumen total de tren inferior'},
+      {nm:'Femoral e Isquiotibiales',     obj:'Posterior del tren inferior'},
+      {nm:'Gluteo activo + Core integrado', obj:'Fuerza y estabilidad lumbopelvica'},
+      {nm:'Gluteos intensidad maxima',    obj:'Tecnicas avanzadas y alta densidad'},
+    ],
+    'Piernas': [
+      {nm:'Cuadriceps — fuerza e hipertrofia', obj:'Patron de rodilla dominante'},
+      {nm:'Femoral + Gluteo',             obj:'Patron de cadera y posterior'},
+      {nm:'Piernas volumen total',        obj:'Alto volumen acumulado bilateral'},
+      {nm:'Piernas fuerza maxima',        obj:'Rangos de fuerza, pocas reps, mucha carga'},
+      {nm:'Accesorios y estabilizadores', obj:'Musculos secundarios y prevencion'},
+      {nm:'Piernas potencia atletica',    obj:'Explosividad y transferencia funcional'},
+    ],
+    'Tren superior': [
+      {nm:'Empuje — Pecho + Hombros + Triceps', obj:'Fuerza horizontal y vertical anterior'},
+      {nm:'Tiron — Espalda + Biceps',     obj:'Fuerza de tirón y grosor dorsal'},
+      {nm:'Hombros 360 grados',           obj:'Deltoides anterior, medio y posterior'},
+      {nm:'Pecho — enfasis e hipertrofia',obj:'Maximo volumen pectoral'},
+      {nm:'Espalda — grosor y amplitud',  obj:'Dorsal ancho y trapecio'},
+      {nm:'Brazos — Biceps + Triceps',    obj:'Volumen especifico de brazos'},
+    ],
+    'Abdomen y Core': [
+      {nm:'Core — fuerza y anti-extension', obj:'Plancha, dead bug, ab wheel'},
+      {nm:'Core — estabilidad y control lumbar', obj:'Pallof press, bird dog, plank variations'},
+      {nm:'Core — potencia y transferencia', obj:'Rotaciones con carga, throws, pallof'},
+      {nm:'Core funcional integrado',     obj:'Movimientos combinados con core activo'},
+    ],
+    'Full body': [
+      {nm:'Full Body A — Bisagra + Empuje', obj:'Cadera y tren superior anterior'},
+      {nm:'Full Body B — Rodilla + Tiron',  obj:'Cuadriceps y tren superior posterior'},
+      {nm:'Full Body C — Unilateral + Core', obj:'Equilibrio, simetria y estabilidad'},
+    ],
+    'Funcional': [
+      {nm:'Funcional — Potencia y Velocidad', obj:'Fuerza explosiva y coordinacion'},
+      {nm:'Funcional — Resistencia Metabolica', obj:'Capacidad de trabajo sostenida'},
+      {nm:'Funcional — Movilidad y Control', obj:'Rango articular y control motor'},
+    ],
+    'Cross training': [
+      {nm:'Cross — Potencia',    obj:'Movimientos complejos de alta intensidad'},
+      {nm:'Cross — Metabolico',  obj:'Capacidad aerobica-anaerobica'},
+      {nm:'Cross — Tecnica',     obj:'Calidad de movimiento y aprendizaje motor'},
+    ],
+  };
+
+  const warmups = {
+    'Gluteos': ['Caminata inclinada 5-8 min al 55-60% FC max','Activacion glutea: clamshell 2x15 + puente de gluteo 2x15','Movilidad de cadera: estiramiento 90/90, 60 seg por lado'],
+    'Piernas': ['Trote suave o bicicleta 5-8 min','Movilidad de tobillo: circunduccion 10 reps c/lado','Activacion: sentadilla con banda 2x15 + peso muerto con barra vacia 2x8'],
+    'Tren superior': ['Mancuernas livianas: circulos de hombros 2x15 adelante y atras','Face pull con banda elastica 2x20','Press liviano 2x15 + remo con banda 2x15'],
+    'Abdomen y Core': ['Caminata 5 min','Cat-cow 10 reps + bird dog 10 c/lado','Plancha corta 2x20 seg con respiracion nasal'],
+    'Full body': ['Trote 5-8 min','Movilidad dinamica: cadera + hombros + tobillo','Activacion: 10 sentadillas + 10 flexiones + 10 remos con banda'],
+    'Funcional': ['Salto a la soga 3 min o trote ligero','Movilidad dinamica: circulos de brazos + apertura de cadera dinamica','Activacion: 10 sentadillas + 10 flexiones + 10 remos TRX'],
+    'Cross training': ['Remo o bicicleta 3 min a baja intensidad','Movilidad dinamica: inchworm + spiderman lunge + jumping jack','Tecnica del dia a cero o muy baja carga'],
+  };
+
+  const techTips = {
+    'Gluteos': [
+      'La conexion mente-musculo es mas importante que el peso en la barra. Antes de cada rep, piensa en apretar el gluteo que vas a trabajar. La diferencia en activacion puede ser del 30-40% solo por el foco mental.',
+      'El hip thrust es el ejercicio mas efectivo para el gluteo mayor. Pero lo pierde todo si no hay retroversion pelvica y pausa arriba. Un hip thrust bien ejecutado con 60kg supera a uno mal ejecutado con 120kg.',
+      'No todos los gluteos responden al mismo estimulo. Experimenta con el ancho de pisada en prensa y sentadilla. Pequenos ajustes pueden hacer una diferencia enorme en la activacion.',
+    ],
+    'Piernas': [
+      'La sentadilla es un patron de movimiento fundamental para toda la vida. Vale infinitamente mas priorizar la tecnica correcta que agregar peso. Un kilo de mas no vale una lesion de rodilla.',
+      'El cuadriceps se trabaja mejor con rango completo de movimiento. La "media sentadilla" reduce los beneficios y puede aumentar el estres en la rodilla. La profundidad adecuada es mas efectiva y mas segura.',
+      'El gemelo necesita dos cosas: alto volumen (15-25 reps) y rango completo. El estiramiento en la parte baja del movimiento es donde ocurre la estimulacion real. No lo recortes.',
+    ],
+    'Tren superior': [
+      'Retraccion escapular ANTES de empujar o jalar: es el paso cero de cualquier ejercicio de tren superior. Sin estabilidad escapular, los hombros compensan y el riesgo de lesion se multiplica.',
+      'Por cada serie de empuje, necesitas una serie de tirón. La razon 1:1 es la minima recomendada para mantener la salud articular del hombro a largo plazo. Tu cuerpo futuro te lo agradecera.',
+      'Biceps y triceps se estimulan en TODOS los movimientos compuestos. Los ejercicios de aislamiento son el toque final, no la base. El tirón activa el biceps; el empuje activa el triceps. La base ya esta cubierta.',
+    ],
+    'Abdomen y Core': [
+      'El core no se fortalece principalmente con crunch. Se fortalece aprendiendo a RESISTIR movimientos. La plancha, el dead bug y el pallof press son superiores al crunch clasico porque entrenan la funcion real del core.',
+      'La respiracion y el core son inseparables. Exhalar con fuerza activa el transverso del abdomen, que es el verdadero faja natural. Aprender a respirar correctamente es aprender a usar el core correctamente.',
+      'El 80% del dolor lumbar cronico tiene origen en un core debil e inestable, no en una patologia estructural. Fortalecer el core es la mejor medicina preventiva y correctiva disponible.',
+    ],
+    'Full body': [
+      'Un full body bien armado cumple siempre: 1 patron de empuje + 1 de tirón + 1 de cadera (bisagra) + 1 de rodilla + 1 de core. Si tiene eso, es completo y equilibrado.',
+      'En un full body, la fatiga se acumula mas rapido que en un split. Si el ultimo ejercicio pierde calidad tecnica, es senal de que el volumen total es demasiado. Reducir cantidad, nunca calidad.',
+      'Full body 3 dias por semana bajo esquema A-B-C es uno de los protocolos mas efectivos y respaldados para ganar musculo y fuerza de manera simultanea.',
+    ],
+    'Funcional': [
+      'Lo funcional sin intensidad es solo calentamiento. Lo funcional sin tecnica es una lesion esperando ocurrir. El punto de maxima eficiencia esta en la interseccion entre intensidad alta y tecnica solida.',
+      'Registrar tus resultados en AMRAP y EMOM es igual de importante que registrar pesos. El numero de rondas, el tiempo completado, la carga usada: todos son datos de progreso.',
+      'La movilidad es fuerza en rangos extremos. Dedicar tiempo al trabajo de movilidad articular no es perder tiempo de entrenamiento, es una inversion en rendimiento y longevidad.',
+    ],
+    'Cross training': [
+      'En cross training, la tecnica de movimientos complejos (clean, snatch, thruster) SIEMPRE tiene prioridad sobre la carga. Aprender el patron con peso cero o minimo, progresar solo cuando la tecnica es impecable.',
+      'Escalar (scaling) no es rendirse, es entrenar con inteligencia. Modificar el ejercicio o reducir la carga cuando la tecnica falla es exactamente lo correcto. El progreso lento y consistente supera siempre al rapido y lesionado.',
+      'La recuperacion entre sesiones de alta intensidad requiere al menos 48 horas. El sobreentrenamiento es real y sus efectos se acumulan silenciosamente. Mas no siempre es mejor.',
+    ],
+  };
+
+  /* ===== BUILD DAYS ===== */
+  function buildDays(n) {
+    const pool = selectPool(zona, tipo);
+    const exs = applyLevel(pool);
+    const themes = dayThemes[zona] || dayThemes['Full body'];
+    const wu = warmups[zona] || warmups['Full body'];
+    const tips = techTips[zona] || techTips['Full body'];
+    const exCount = isNov ? 4 : isMid ? 5 : 6;
+    const cooldown = [
+      'Estiramiento de la zona trabajada: 30-40 seg por grupo muscular',
+      'Respiracion diafragmatica: 3 min de recuperacion activa',
+      'Foam roller si disponible: 2 min por zona principal trabajada',
+    ];
+    return Array.from({length: n}, (_, i) => ({
+      n: i+1,
+      nm: 'Dia '+(i+1)+' — '+themes[i%themes.length].nm,
+      obj: themes[i%themes.length].obj,
+      warmup: wu,
+      exercises: exs.slice(0, exCount),
+      cooldown,
+      tip: tips[i % tips.length],
+      dur: isNov ? '45-55 min' : isMid ? '60-70 min' : '70-85 min',
+    }));
+  }
+
+  /* ===== BUILD PHASES ===== */
+  function buildPhases(pid) {
+    const plib = {
+      '3m': [
+        {n:1, nm:'Adaptacion Tecnica',   dur:'Mes 1 — 4 semanas', vol:'3 x 12-15 reps', int:'RPE 6-7/10',
+         desc:'El objetivo es aprender a ejecutar cada ejercicio con precision. El sistema nervioso central necesita entre 3 y 6 semanas para memorizar un nuevo patron motor. No subas la carga hasta dominar la tecnica. Priorizá el recorrido correcto por sobre el numero en la barra.',
+         week:'Lunes: Tren inferior | Miercoles: Tren superior | Viernes: Full body ligero',
+         prog:'Si en la ultima serie podes hacer 2 o mas reps del maximo indicado con buena tecnica, subi 2.5kg la proxima sesion.'},
+        {n:2, nm:'Progresion de Cargas', dur:'Mes 2 — 4 semanas', vol:'4 x 8-12 reps', int:'RPE 7.5-8.5/10',
+         desc:'Con la base tecnica establecida, comenzamos a estresar el tejido muscular progresivamente. Periodizacion lineal: cada sesion intentar superar la anterior. Semana 4: DELOAD obligatorio (reducir volumen al 60%, mantener la carga habitual).',
+         week:'Lunes: Tren inferior | Martes: Tren superior | Jueves: Tren inferior | Viernes: Tren superior',
+         prog:'Doble progresion: primero llegar al maximo de reps en TODAS las series con buena tecnica. Entonces, subir la carga 2.5kg y volver al minimo de reps.'},
+        {n:3, nm:'Intensificacion',      dur:'Mes 3 — 4 semanas', vol:'4-5 x 6-10 reps', int:'RPE 8.5-9.5/10',
+         desc:'Maxima exigencia del ciclo. Se incorporan tecnicas de intensificacion para romper la adaptacion: dropsets en el ultimo set de los ejercicios principales, superseries de musculos antagonistas, tempo controlado (3-1-2). Semana 4: DELOAD obligatorio.',
+         week:'Lunes: Zona prioritaria A | Martes: Empuje | Jueves: Zona prioritaria B | Viernes: Tiron | Sabado: Core + HIIT opcional',
+         prog:'Dropset: al llegar al fallo, bajar 25% de carga SIN DESCANSO y continuar. Repetir x2. Superserie: dos ejercicios consecutivos sin descanso entre ellos.'},
+      ],
+      '4m': [
+        {n:1, nm:'Adaptacion Anatomica', dur:'Mes 1', vol:'3 x 15-20', int:'RPE 5-6',
+         desc:'Preparacion de tejidos conectivos. Tendones y ligamentos necesitan mas tiempo que el musculo para adaptarse a nuevas cargas. Alto volumen de reps con carga moderada-baja. El objetivo no es el agotamiento, sino la preparacion estructural.',
+         week:'3 dias Full body', prog:'Tecnica perfecta es el UNICO objetivo de esta fase.'},
+        {n:2, nm:'Hipertrofia Base',     dur:'Mes 2', vol:'4 x 10-12', int:'RPE 7-8',
+         desc:'Rango de repeticiones optimo para hipertrofia. Tempo 2-0-2 (2 seg bajar, sin pausa, 2 seg subir). Descanso de 75 seg entre series. Progresion lineal sesion a sesion.',
+         week:'4 dias: Tren inferior / Tren superior alternados', prog:'Doble progresion: reps primero, luego carga. Deload semana 4.'},
+        {n:3, nm:'Intensificacion',      dur:'Mes 3', vol:'4-5 x 6-10', int:'RPE 8.5+',
+         desc:'Superseries de antagonistas, dropsets en ejercicios principales, tempo lento. Maxima tension mecanica y estres metabolico. El musculo necesita estimulos variables para seguir adaptandose.',
+         week:'5 dias: Push/Pull/Legs o Zona/Antagonista/Core', prog:'Dropsets y superseries en ejercicios principales. Deload semana 4.'},
+        {n:4, nm:'Consolidacion y Reset',dur:'Mes 4', vol:'3 x 10-15', int:'RPE 6-7',
+         desc:'Semanas 1-2: reducir volumen al 70%, mantener intensidad relativa. Semana 3: deload total (60% de volumen). Semana 4: evaluacion de progresos y planificacion del siguiente ciclo.',
+         week:'3 dias Full body moderado', prog:'Objetivo: recuperacion total y asimilacion de las ganancias. El descanso planificado es parte del entrenamiento.'},
+      ],
+      '6m': [
+        {n:1, nm:'Adaptacion Anatomica', dur:'Mes 1', vol:'3 x 15-20', int:'Baja',      desc:'Base estructural. Tejidos conectivos, postura y patron motor.',          week:'3 dias Full body',        prog:'Tecnica perfecta.'},
+        {n:2, nm:'Hipertrofia Base',     dur:'Mes 2', vol:'4 x 10-12', int:'Media',     desc:'Construccion muscular. Progresion lineal. Deload semana 4.',              week:'4 dias Inf/Sup alternado', prog:'Doble progresion.'},
+        {n:3, nm:'Intensificacion A',    dur:'Mes 3', vol:'4-5 x 6-10',int:'Alta',      desc:'Superseries, dropsets, tempo. Tecnicas de intensificacion. Deload sem 4.', week:'5 dias Push/Pull/Legs',   prog:'SS y DS en principales.'},
+        {n:4, nm:'Deload y Reajuste',    dur:'Mes 4', vol:'3 x 12-15', int:'Baja-media',desc:'Recuperacion activa. Correccion de debilidades. Evaluacion parcial.',     week:'3 dias Full body moderado',prog:'Bajar volumen 40%, mantener carga.'},
+        {n:5, nm:'Especializacion',      dur:'Mes 5', vol:'5 x 6-8 + accesorios',int:'Muy alta',desc:'Maximo foco en la zona prioritaria. Periodizacion ondulante.', week:'5-6 dias especializados',  prog:'Ondulante: pesado/moderado/liviano.'},
+        {n:6, nm:'Peak y Evaluacion',    dur:'Mes 6', vol:'Periodizado',int:'Variable',  desc:'Maxima expresion del ciclo. Test de fuerza. Plan del siguiente ciclo.',   week:'4-5 dias con taper',       prog:'Deload semana 3. Test semana 4.'},
+      ],
+      '12m': [
+        {n:1, nm:'Adaptacion Anatomica',   dur:'Mes 1-2', vol:'3 x 15-20', int:'Baja',    desc:'La base que construyas aqui determina el techo de todo lo que viene despues. Preparacion de tejidos conectivos y patrones motores.', week:'3 dias Full body', prog:'Tecnica perfecta es el unico KPI.'},
+        {n:2, nm:'Hipertrofia Base',        dur:'Mes 3-4', vol:'4 x 10-12', int:'Media',   desc:'Construccion muscular con progresion lineal. Deload al final del mes 4 obligatorio.', week:'4 dias Inf/Sup', prog:'Progresion lineal. Deload mes 4.'},
+        {n:3, nm:'Fuerza e Intensidad',     dur:'Mes 5-6', vol:'5 x 5-8',   int:'Alta',    desc:'Trabajo en rangos de fuerza con tecnicas de intensificacion. Dropset, superserie, pausa.', week:'4-5 dias Push/Pull/Legs', prog:'RPE 8-9. Deload mes 6.'},
+        {n:4, nm:'Especializacion',          dur:'Mes 7-8', vol:'5-6 x 6-10 zona',int:'Muy alta',desc:'Maximo foco en zona prioritaria. Periodizacion ondulante por sesion.', week:'5-6 dias especializados', prog:'A pesado / B moderado / C liviano.'},
+        {n:5, nm:'Peak de Rendimiento',      dur:'Mes 9-10',vol:'Periodizado',int:'Maxima', desc:'Maxima expresion del ciclo. Evaluacion de marcas personales. Preparacion del siguiente ano.', week:'5 dias con taper semana 4', prog:'Deload mes 9 y 10 semana 4.'},
+        {n:6, nm:'Transicion y Evaluacion',  dur:'Mes 11-12',vol:'Reducido',int:'Media',   desc:'Consolidacion de ganancias. Evaluacion anual completa. Planificacion del proximo ciclo.', week:'3-4 dias moderado', prog:'Reducir 40% volumen. Mantener intensidad relativa.'},
+      ],
+    };
+    return plib[pid] || plib['3m'];
+  }
+
+  /* ===== RECOMMENDATIONS ===== */
+  function buildRecs(obj, niv) {
+    const base = [
+      'Sueno: 7-9 horas por noche. El 70% de la recuperacion muscular y la sintesis proteica ocurren durante el sueno profundo. Sin sueno, el entrenamiento tiene rendimientos decrecientes.',
+      'Proteinas: 1.6-2g por kilo de peso corporal por dia. Distribuirlas en 3-5 comidas. Priorizar alimentos completos: carnes magras, huevos, lacteos, legumbres. La ventana anabolica post-entrenamiento existe pero dura horas, no minutos.',
+      'Hidratacion: 2.5 litros de agua al dia como minimo, mas lo que perdes durante el entrenamiento. La deshidratacion del 2% del peso corporal reduce el rendimiento hasta un 10-20%.',
+      'Constancia supera intensidad: entrenar 3 dias por semana durante 6 meses produce mejores resultados que entrenar 6 dias durante 1 mes y luego abandonar. La continuidad es el factor numero uno.',
+      'Registro obligatorio: anotar peso, series y repeticiones en cada sesion. Sin datos historicos no hay planificacion real ni progreso medible. Una app o una libreta son igualmente validas.',
+    ];
+    if (obj==='Bajar grasa')          base.push('DEFICIT CALORICO: 300-500 kcal por debajo del mantenimiento. Mas deficit implica mas perdida muscular, peor rendimiento y mayor probabilidad de abandono. La paciencia es una estrategia.');
+    if (obj==='Ganar masa muscular')  base.push('SUPERAVIT CALORICO: 250-400 kcal extra al dia con suficientes proteinas (2g/kg). Subir muy rapido implica acumular mas grasa que musculo. El recomp corporal requiere tiempo.');
+    if (obj==='Aumentar fuerza')      base.push('FUERZA: requiere progresion de cargas sistematica, recuperacion COMPLETA entre sesiones y tecnica impecable. No sacrifiques descanso por mas frecuencia.');
+    if (niv==='Principiante')         base.push('VENTAJA DEL PRINCIPIANTE: el novice effect hace que progreses con casi cualquier estimulo. No necesitas tecnicas avanzadas. Necesitas consistencia, paciencia y tecnica correcta.');
+    if (niv==='Avanzado')             base.push('NIVEL AVANZADO: la variacion del estimulo cada 4-6 semanas es lo que genera nuevas adaptaciones. Tu cuerpo ya se adapto al estimulo basico. La variedad PLANIFICADA es tu herramienta principal.');
+    return base;
+  }
+
+  /* ===== PROGRESSION RULES ===== */
+  function buildProg(niv, pid) {
+    const map = {
+      'Principiante': 'PROGRESION LINEAL: cada sesion, intentar agregar 2.5kg a los ejercicios principales. Tu sistema nervioso central puede mejorar sesion a sesion (novice effect). Este es el periodo de mayor ganancia relativa de toda tu vida deportiva. Aprovechalo con consistencia.',
+      'Intermedio': 'DOBLE PROGRESION: primero llegar al tope de repeticiones en TODAS las series con buena tecnica. Cuando lo lograas, subir la carga 2.5kg y volver al minimo de repeticiones. Este ciclo puede durar semanas en ejercicios avanzados.',
+      'Avanzado': 'PERIODIZACION ONDULANTE: variar la carga y las reps entre sesiones dentro de la misma semana. Ejemplo: Lunes 5x5 (RPE 8.5), Jueves 4x10 (RPE 7.5). El estimulo variable impide la adaptacion completa.',
+    };
+    const dl = pid !== 'day' ? ' || DELOAD cada 4-6 semanas: reducir el VOLUMEN al 60% durante 1 semana, manteniendo la intensidad relativa. La supercompensacion ocurre DESPUES del deload, no durante el entrenamiento intenso.' : '';
+    return (map[niv] || map['Intermedio']) + dl;
+  }
+
+  /* ===== ASSEMBLE ===== */
+  const isMulti = ['3m','4m','6m','12m'].includes(pid);
+  const diasFinal = pid === 'day' ? 1 : diasN;
+  const workouts = buildDays(diasFinal);
+  const phases = isMulti ? buildPhases(pid) : null;
+  const injN = hasInj ? injNote(les) : null;
+  const summary = 'Plan para atleta de nivel '+niv+' con objetivo de '+obj.toLowerCase()+'. Entrenamiento '+diasFinal+' dia'+(diasFinal>1?'s':'')+' por semana con enfasis en '+zona+'. Metodologia: '+tipo+'. '+(hasInj ? 'Consideraciones especiales por molestia en '+les+'.' : 'Sin limitaciones fisicas reportadas.');
+
+  return {
+    pid, label:planNm,
+    title: 'PLAN '+planNm.toUpperCase(),
+    summary, obj, niv, diasFinal, zona, les, tipo,
+    phases, workouts,
+    recommendations: buildRecs(obj, niv),
+    injNote: injN,
+    progressionRules: buildProg(niv, pid),
+    motivational: 'El cuerpo no miente. Ponele constancia, ponele intencion, y el resultado llega solo. '+BRAND.gymName+' esta con vos en cada repeticion.',
+  };
+}
+
+/* ==============================================
+   RENDER RESULT
+   ============================================== */
+function renderResult() {
+  const p = plan;
+  let h = `
+    <div class="rhero">
+      <div class="rbadge">Plan generado</div>
+      <div class="rtit">${p.title}</div>
+      <div class="rtags">
+        <span class="rtag">${p.niv}</span>
+        <span class="rtag">${p.obj}</span>
+        <span class="rtag">${p.diasFinal}x / semana</span>
+        <span class="rtag">${p.zona}</span>
+      </div>
+    </div>
+    <div class="rbody">
+      <div class="rsec">
+        <div class="rshd"><div class="rsico">D</div><div class="rstit">Diagnostico</div></div>
+        <div class="rsbody"><p class="rsum">${p.summary}</p></div>
+      </div>`;
+
+  if (p.injNote) h += `<div class="warnbox"><strong>AVISO ${p.les.toUpperCase()}:</strong><br>${p.injNote}</div>`;
+
+  if (p.phases) {
+    h += `<div class="rsec"><div class="rshd"><div class="rsico">F</div><div class="rstit">Planificacion por fases</div></div><div class="rsbody">`;
+    p.phases.forEach(ph => {
+      h += `<div class="phcard">
+        <div class="phhd"><span class="phnum">F${ph.n}</span><span class="phnm">${ph.nm}</span></div>
+        <div class="phdur">${ph.dur} | Vol: ${ph.vol} | ${ph.int}</div>
+        <div class="phdesc">${ph.desc}</div>
+        <div class="phdesc" style="margin-top:6px;color:rgba(182,255,0,.55);"><strong>Estructura:</strong> ${ph.week}</div>
+        <div class="phdesc" style="margin-top:4px;color:rgba(255,255,255,.38);"><strong>Progresion:</strong> ${ph.prog}</div>
+      </div>`;
+    });
+    h += `</div></div>`;
+  }
+
+  h += `<div class="rsec"><div class="rshd"><div class="rsico">E</div><div class="rstit">Rutinas detalladas</div></div><div class="rsbody">`;
+  p.workouts.forEach((day, di) => {
+    h += `<div class="dc${di===0?' open':''}" onclick="toggleDay(this)">
+      <div class="dchd">
+        <div class="dcl">
+          <div class="dnum">${day.n}</div>
+          <div><div class="dnm">${day.nm}</div><div class="dobj">${day.obj}</div></div>
+        </div>
+        <div class="dtog">+</div>
+      </div>
+      <div class="dcbody">
+        <span class="blbl">Entrada en calor — 10-12 min</span>
+        ${day.warmup.map(w=>`<div class="wuitem">- ${w}</div>`).join('')}
+        <span class="blbl main">Bloque principal — ${day.dur}</span>
+        ${day.exercises.map((ex, ei) => {
+          const isSS = ex.advTech === 'superserie';
+          const isDS = ex.advTech === 'dropset';
+          const nc = isSS ? 'exn ss' : isDS ? 'exn ds' : 'exn';
+          const bdg = isSS ? '<span class="badge bss">SUPERSERIE</span>' : isDS ? '<span class="badge bds">DROPSET</span>' : '';
+          const sv = ex.sets !== '-' ? ex.sets+' series x '+ex.reps : ex.reps;
+          return `<div class="exrow">
+            <div class="${nc}">${ei+1}</div>
+            <div class="exinf">
+              <div class="exnm">${bdg}${ex.nm}</div>
+              <div class="exdet">${sv}${ex.rest !== '-' ? ' — Descanso: '+ex.rest : ''}</div>
+              <div class="exnote">${ex.notes}</div>
+              ${ex.pairPrev ? `<div class="expair">Combinar SIN descanso con: ${ex.pairPrev}</div>` : ''}
+            </div>
+          </div>`;
+        }).join('')}
+        <span class="blbl">Vuelta a la calma — 8-10 min</span>
+        ${day.cooldown.map(c=>`<div class="wuitem">- ${c}</div>`).join('')}
+        <div class="tipbox"><strong>CLAVE TECNICA DEL DIA:</strong><br>${day.tip}</div>
+      </div>
+    </div>`;
+  });
+  h += `</div></div>`;
+
+  h += `<div class="rsec"><div class="rshd"><div class="rsico">R</div><div class="rstit">Recomendaciones</div></div><div class="rsbody"><ul class="recul">${p.recommendations.map(r=>`<li>${r}</li>`).join('')}</ul></div></div>`;
+  h += `<div class="rsec"><div class="rshd"><div class="rsico">P</div><div class="rstit">Progresion y periodizacion</div></div><div class="rsbody"><p class="rsum">${p.progressionRules}</p></div></div>`;
+  h += `<div style="background:rgba(182,255,0,.04);border:1px solid rgba(182,255,0,.13);border-radius:var(--rad);padding:14px 16px;font-size:11px;color:rgba(255,255,255,.65);line-height:1.75;font-style:italic;">${p.motivational}</div>`;
+  h += `<div class="goldbox">${BRAND.contactText}</div>`;
+  h += `</div>`; // close rbody
+
+  document.getElementById('resContent').innerHTML = h;
+}
+
+function toggleDay(el) { el.classList.toggle('open'); }
+function restart() { selPlan=null; plan=null; answers={}; curQ=0; renderPlans(); goS('sw'); }
+
+/* ==============================================
+   PDF GENERATOR — ULTRA PROFESIONAL
+   Dark theme, no emojis, all colors explicit
+   ============================================== */
+function downloadPDF() {
+  const btn = document.getElementById('btnPDF');
+  btn.classList.add('loading');
+  btn.textContent = 'Generando PDF...';
+
+  loadJsPDF((err, jsPDF) => {
+    if (err) {
+      btn.classList.remove('loading');
+      btn.textContent = 'DESCARGAR PDF';
+      alert('Error: ' + err.message);
+      return;
+    }
+    try {
+      _buildPDF(jsPDF);
+    } catch(e) {
+      console.error('PDF error:', e);
+      alert('Error al generar el PDF: ' + e.message + '\n\nIntenta recargar la pagina.');
+    } finally {
+      btn.classList.remove('loading');
+      btn.textContent = 'DESCARGAR PDF';
+    }
+  });
+}
+
+function _buildPDF(jsPDF) {
+  const p = plan;
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const PW=210, PH=297, M=16, CW=PW-M*2;
+  let y=0, pageNum=0;
+
+  /* Color helpers — explicit RGB avoids spread operator bugs */
+  const F=(...a)=>doc.setFillColor(...a);
+  const T=(...a)=>doc.setTextColor(...a);
+  const Drw=(...a)=>doc.setDrawColor(...a);
+
+  const FBG   =()=>F(10,10,10);
+  const FCARD =()=>F(22,22,22);
+  const FCARD2=()=>F(28,28,28);
+  const FDARK =()=>F(16,16,16);
+  const FLIME =()=>F(182,255,0);
+  const FROW1 =()=>F(18,18,18);
+  const FROW2 =()=>F(24,24,24);
+  const FGOLD =()=>F(36,28,4);
+  const FRED2 =()=>F(42,8,8);
+  const FDS   =()=>F(55,12,12);
+  const FSS   =()=>F(55,32,4);
+
+  const TWHT  =()=>T(238,238,238);
+  const TLIME =()=>T(182,255,0);
+  const TMUT  =()=>T(105,105,105);
+  const TMUT2 =()=>T(145,145,145);
+  const TBLK  =()=>T(8,8,8);
+  const TGOLD =()=>T(205,165,0);
+  const TRED  =()=>T(215,75,75);
+  const TGRN  =()=>T(95,195,0);
+  const TORG  =()=>T(215,115,0);
+
+  const DRK=()=>Drw(30,30,30);
+  const DLM=()=>Drw(182,255,0);
+  const DGD=()=>Drw(95,75,0);
+  const DRED=()=>Drw(130,35,35);
+
+  const sp = (h) => { y+=h; };
+  const chk = (n) => { if(y+n>PH-M-8) newPage(); };
+
+  function newPage() {
+    doc.addPage(); pageNum++;
+    FBG(); doc.rect(0,0,PW,PH,'F');
+    FLIME(); doc.rect(0,0,PW,2,'F');
+    FCARD(); doc.rect(0,2,PW,13,'F');
+    doc.setFontSize(6.5); doc.setFont('helvetica','bold');
+    TLIME(); doc.text(BRAND.gymName.toUpperCase(), M, 10);
+    TMUT(); doc.text(p.title, PW/2, 10, {align:'center'});
+    TMUT(); doc.text('Pag. '+(pageNum+1), PW-M, 10, {align:'right'});
+    y = 21;
+  }
+
+  function hdr(title) {
+    chk(12);
+    FCARD(); doc.rect(M, y, CW, 9, 'F');
+    FLIME(); doc.rect(M, y, 3, 9, 'F');
+    doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+    TLIME(); doc.text(title.toUpperCase(), M+7, y+6.5);
+    y+=12;
+  }
+
+  function para(text, color, size, style, indent) {
+    const x = M + (indent||0);
+    const w = CW - (indent||0);
+    doc.setFontSize(size||8.5); doc.setFont('helvetica', style||'normal');
+    color();
+    const lines = doc.splitTextToSize(text, w);
+    chk(lines.length * (size||8.5) * 0.44 + 2);
+    doc.text(lines, x, y);
+    y += lines.length * (size||8.5) * 0.44 + 1;
+  }
+
+  function ln() {
+    DRK(); doc.setLineWidth(0.2);
+    doc.line(M, y, PW-M, y); y+=3;
+  }
+
+  function icard(label, val, x, w) {
+    FCARD(); doc.roundedRect(x, y, w, 18, 2, 2, 'F');
+    doc.setFontSize(6); doc.setFont('helvetica','bold'); TLIME();
+    doc.text(label.toUpperCase(), x+w/2, y+6, {align:'center'});
+    doc.setFontSize(8); doc.setFont('helvetica','bold'); TWHT();
+    const v = doc.splitTextToSize(String(val), w-4);
+    doc.text(v[0]||'', x+w/2, y+13, {align:'center'});
+  }
+
+  const now = new Date();
+  const ds = now.toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
+
+  /* ============ PORTADA ============ */
+  FBG(); doc.rect(0,0,PW,PH,'F');
+  FLIME(); doc.rect(0,0,PW,3,'F');
+  FCARD(); doc.rect(0,3,PW,24,'F');
+  // Gym name en header
+  doc.setFontSize(14); doc.setFont('helvetica','bold'); TLIME();
+  doc.text(BRAND.gymName.toUpperCase(), M, 18);
+  doc.setFontSize(7); TMUT();
+  doc.text('SISTEMA INTELIGENTE DE ENTRENAMIENTO', M, 24);
+  doc.setFontSize(7); TMUT();
+  doc.text(ds, PW-M, 24, {align:'right'});
+
+  y = 46;
+  doc.setFontSize(52); doc.setFont('helvetica','bold'); TWHT();
+  doc.text('PLAN', M, y); y+=22;
+  TLIME(); doc.text('PERSONALIZADO', M, y); y+=18;
+  TWHT(); doc.setFontSize(18);
+  doc.text('GENERADO PARA VOS', M, y); y+=14;
+  ln(); sp(4);
+
+  // Plan badge
+  FLIME(); doc.roundedRect(M, y, 72, 10, 2, 2, 'F');
+  doc.setFontSize(10); doc.setFont('helvetica','bold'); TBLK();
+  doc.text(p.label.toUpperCase(), M+36, y+7.5, {align:'center'});
+  y+=14;
+
+  // Fecha
+  doc.setFontSize(8); doc.setFont('helvetica','normal'); TMUT();
+  doc.text('Generado el '+ds, M, y); y+=14;
+
+  // 4 info cards
+  const cw = (CW-9)/4;
+  const cards = [{l:'OBJETIVO',v:p.obj},{l:'NIVEL',v:p.niv},{l:'DIAS/SEM',v:p.diasFinal+'x'},{l:'ZONA',v:p.zona}];
+  cards.forEach((c,i) => icard(c.l, c.v, M+i*(cw+3), cw));
+  y+=22;
+
+  if (p.injNote) {
+    FRED2(); doc.roundedRect(M, y, CW, 12, 2, 2, 'F');
+    DRED(); doc.setLineWidth(0.3); doc.roundedRect(M, y, CW, 12, 2, 2, 'S');
+    doc.setFontSize(7); doc.setFont('helvetica','bold'); TRED();
+    doc.text('AVISO '+p.les.toUpperCase()+': Consultar con profesionales del gimnasio antes de comenzar.', M+4, y+8);
+    y+=16;
+  }
+
+  sp(8);
+  doc.setFontSize(9); doc.setFont('helvetica','italic'); TMUT2();
+  const ml = doc.splitTextToSize('"'+p.motivational+'"', CW);
+  doc.text(ml, M, y); y+=ml.length*4.8;
+
+  // Footer portada
+  FDARK(); doc.rect(0, PH-14, PW, 14, 'F');
+  doc.setFontSize(6.5); doc.setFont('helvetica','normal'); TMUT();
+  doc.text(BRAND.footerText, M, PH-6);
+  doc.text('1', PW-M, PH-6, {align:'right'});
+
+  /* ============ PAG 2: PERFIL + RECOMENDACIONES ============ */
+  newPage();
+
+  hdr('Perfil del atleta');
+  // Tabla de perfil
+  FCARD(); doc.roundedRect(M, y, CW, 62, 3, 3, 'F');
+  FLIME(); doc.rect(M, y, 3, 62, 'F');
+  const prof = [
+    ['Objetivo principal', p.obj],
+    ['Nivel de entrenamiento', p.niv],
+    ['Dias disponibles / semana', p.diasFinal+' dias'],
+    ['Zona prioritaria', p.zona],
+    ['Preferencia de entrenamiento', p.tipo],
+    ['Limitacion fisica', p.les],
+    ['Plan seleccionado', p.label],
+  ];
+  let py = y+7;
+  prof.forEach(([lb,vl],ri) => {
+    if(ri>0){ DRK(); doc.setLineWidth(0.15); doc.line(M+7,py-2.5,M+CW-3,py-2.5); }
+    doc.setFontSize(6.5); doc.setFont('helvetica','bold'); TMUT();
+    doc.text(lb.toUpperCase(), M+7, py);
+    doc.setFontSize(8.5); doc.setFont('helvetica','bold'); TWHT();
+    doc.text(vl, PW-M, py, {align:'right'});
+    py+=8;
+  });
+  y+=68;
+
+  if (p.injNote) {
+    hdr('Consideracion especial — '+p.les);
+    para(p.injNote, TRED, 8.5, 'normal'); sp(4);
+  }
+
+  hdr('Reglas de progresion y periodizacion');
+  para(p.progressionRules, TWHT, 8.5, 'normal'); sp(5);
+
+  hdr('Recomendaciones generales');
+  p.recommendations.forEach((rec, ri) => {
+    chk(11);
+    if(ri%2===0){FROW1();}else{FROW2();}
+    doc.rect(M, y-1, CW, 10, 'F');
+    doc.setFontSize(8); doc.setFont('helvetica','normal'); TWHT();
+    const rl = doc.splitTextToSize('>> '+rec, CW-6);
+    doc.text(rl[0], M+3, y+6.5);
+    y+=11;
+  });
+
+  /* ============ PAG FASES (si corresponde) ============ */
+  if (p.phases) {
+    newPage();
+    hdr('Planificacion por fases — '+p.label);
+    sp(2);
+
+    p.phases.forEach(ph => {
+      chk(52);
+      FCARD(); doc.roundedRect(M, y, CW, 48, 3, 3, 'F');
+      FLIME(); doc.roundedRect(M, y, 4, 48, 2, 2, 'F');
+
+      // Fase badge
+      FLIME(); doc.roundedRect(M+8, y+4, 22, 10, 2, 2, 'F');
+      TBLK(); doc.setFontSize(9); doc.setFont('helvetica','bold');
+      doc.text('FASE '+ph.n, M+19, y+10.5, {align:'center'});
+
+      // Nombre
+      TWHT(); doc.setFontSize(10); doc.setFont('helvetica','bold');
+      doc.text(ph.nm, M+35, y+10);
+
+      // Duracion | Vol | Int
+      TMUT(); doc.setFontSize(7); doc.setFont('helvetica','normal');
+      doc.text(ph.dur+' | Vol: '+ph.vol+' | Intensidad: '+ph.int, M+8, y+18);
+
+      // Desc
+      const dl = doc.splitTextToSize(ph.desc, CW-14);
+      TMUT2(); doc.setFontSize(7.5);
+      doc.text(dl.slice(0,2), M+8, y+25);
+
+      // Estructura
+      TGRN(); doc.setFontSize(7); doc.setFont('helvetica','bold');
+      doc.text('Estructura:', M+8, y+38);
+      TMUT(); doc.setFont('helvetica','normal');
+      doc.text(doc.splitTextToSize(ph.week, CW-40)[0], M+32, y+38);
+
+      // Progresion
+      TGOLD(); doc.setFont('helvetica','bold');
+      doc.text('Progresion:', M+8, y+44);
+      TMUT(); doc.setFont('helvetica','normal');
+      doc.text(doc.splitTextToSize(ph.prog, CW-38)[0], M+32, y+44);
+
+      y+=52;
+    });
+  }
+
+  /* ============ PAGINAS DE RUTINA (1 por dia) ============ */
+  p.workouts.forEach((day, di) => {
+    newPage();
+
+    // Header del dia
+    FCARD2(); doc.roundedRect(M, y, CW, 18, 3, 3, 'F');
+    FLIME(); doc.roundedRect(M, y, 4, 18, 2, 2, 'F');
+
+    // Numero badge
+    FLIME(); doc.roundedRect(M+7, y+3, 18, 12, 2, 2, 'F');
+    TBLK(); doc.setFontSize(14); doc.setFont('helvetica','bold');
+    doc.text(String(day.n), M+16, y+11.5, {align:'center'});
+
+    // Nombre y objetivo
+    TWHT(); doc.setFontSize(11); doc.setFont('helvetica','bold');
+    doc.text(day.nm, M+30, y+9);
+    TMUT(); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+    doc.text(day.obj, M+30, y+15);
+
+    // Duracion badge
+    FCARD(); doc.roundedRect(PW-M-32, y+4, 32, 10, 2, 2, 'F');
+    TLIME(); doc.setFontSize(6.5); doc.setFont('helvetica','bold');
+    doc.text(day.dur, PW-M-16, y+10.5, {align:'center'});
+    y+=22;
+
+    // Entrada en calor
+    TMUT(); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+    doc.text('ENTRADA EN CALOR — 10-12 min', M, y); y+=5;
+    day.warmup.forEach(w => {
+      chk(6);
+      TMUT2(); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+      doc.text('- '+w, M+3, y); y+=5;
+    });
+    sp(5);
+
+    // Bloque principal
+    TLIME(); doc.setFontSize(8); doc.setFont('helvetica','bold');
+    doc.text('BLOQUE PRINCIPAL', M, y); y+=5;
+
+    // Table header
+    FDARK(); doc.rect(M, y, CW, 7, 'F');
+    FLIME(); doc.rect(M, y, 3, 7, 'F');
+    TLIME(); doc.setFontSize(6.5); doc.setFont('helvetica','bold');
+    doc.text('#', M+5, y+5);
+    doc.text('EJERCICIO', M+14, y+5);
+    doc.text('SERIES x REPS', M+95, y+5);
+    doc.text('DESCANSO', M+133, y+5);
+    y+=9;
+
+    day.exercises.forEach((ex, ei) => {
+      const hasAdv = !!ex.advTech;
+      const noteLine1 = doc.splitTextToSize(ex.notes || '', CW-18)[0] || '';
+      const noteLine2 = doc.splitTextToSize(ex.notes || '', CW-18)[1] || '';
+      const pairLine = ex.pairPrev ? 'Con: '+ex.pairPrev : '';
+      const rowH = hasAdv ? (pairLine ? 22 : 19) : (ex.notes ? 17 : 13);
+      chk(rowH+3);
+
+      // Row bg
+      if(ei%2===0){FROW1();}else{FROW2();}
+      doc.rect(M, y-1, CW, rowH, 'F');
+
+      // Numero con color segun tecnica
+      if (ex.advTech === 'dropset') { FDS(); }
+      else if (ex.advTech === 'superserie') { FSS(); }
+      else { F(28,45,0); }
+      doc.roundedRect(M+1, y, 10, rowH-2, 1, 1, 'F');
+      TLIME(); doc.setFontSize(10); doc.setFont('helvetica','bold');
+      doc.text(String(ei+1), M+6, y+8, {align:'center'});
+
+      // Badge DROPSET o SUPERSERIE
+      let nameY = y+9;
+      if (ex.advTech === 'dropset') {
+        FDS(); doc.roundedRect(M+14, y+1.5, 17, 5.5, 1, 1, 'F');
+        DRED(); doc.setLineWidth(0.2); doc.roundedRect(M+14, y+1.5, 17, 5.5, 1, 1, 'S');
+        TRED(); doc.setFontSize(5.5); doc.setFont('helvetica','bold');
+        doc.text('DROPSET', M+22.5, y+5.5, {align:'center'});
+        nameY = y+13;
+      } else if (ex.advTech === 'superserie') {
+        FSS(); doc.roundedRect(M+14, y+1.5, 22, 5.5, 1, 1, 'F');
+        Drw(120,60,0); doc.setLineWidth(0.2); doc.roundedRect(M+14, y+1.5, 22, 5.5, 1, 1, 'S');
+        TORG(); doc.setFontSize(5.5); doc.setFont('helvetica','bold');
+        doc.text('SUPERSERIE', M+25, y+5.5, {align:'center'});
+        nameY = y+13;
+      }
+
+      // Nombre ejercicio
+      TWHT(); doc.setFontSize(8.5); doc.setFont('helvetica','bold');
+      const nmX = hasAdv ? M+14 : M+14;
+      doc.text(ex.nm, nmX, nameY);
+
+      // Series x reps
+      const sv = ex.sets!=='-' ? ex.sets+'x'+ex.reps : ex.reps;
+      TLIME(); doc.setFontSize(8.5); doc.setFont('helvetica','bold');
+      doc.text(sv, M+95, nameY);
+
+      // Descanso
+      TMUT(); doc.setFontSize(8); doc.setFont('helvetica','normal');
+      doc.text(ex.rest!=='-' ? ex.rest : '-', M+133, nameY);
+
+      // Notas (hasta 2 lineas)
+      if (noteLine1) {
+        doc.setTextColor(88,88,88); doc.setFontSize(6.5); doc.setFont('helvetica','italic');
+        doc.text(noteLine1, M+14, y+rowH-4);
+      }
+      if (pairLine) {
+        TORG(); doc.setFontSize(6); doc.setFont('helvetica','bold');
+        doc.text(pairLine, M+14, y+rowH-1);
+      }
+
+      y += rowH+2;
+    });
+    sp(5);
+
+    // Vuelta a la calma
+    TMUT(); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+    doc.text('VUELTA A LA CALMA — 8-10 min', M, y); y+=5;
+    day.cooldown.forEach(c => {
+      chk(6);
+      TMUT2(); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+      doc.text('- '+c, M+3, y); y+=5;
+    });
+    sp(5);
+
+    // Tip box
+    chk(20);
+    FGOLD(); doc.roundedRect(M, y, CW, 17, 2, 2, 'F');
+    DGD(); doc.setLineWidth(0.35); doc.roundedRect(M, y, CW, 17, 2, 2, 'S');
+    doc.setFontSize(7); doc.setFont('helvetica','bold'); TGOLD();
+    doc.text('CLAVE TECNICA DEL DIA', M+4, y+5.5);
+    doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+    doc.setTextColor(178,142,60);
+    const tl = doc.splitTextToSize(day.tip, CW-8);
+    doc.text(tl[0], M+4, y+11);
+    if(tl[1]) doc.text(tl[1], M+4, y+15);
+    y+=21;
+
+    // Footer pagina
+    FDARK(); doc.rect(0, PH-12, PW, 12, 'F');
+    doc.setFontSize(6); doc.setFont('helvetica','normal'); TMUT();
+    doc.text(BRAND.gymName.toUpperCase()+' | '+BRAND.contactText, M, PH-5);
+    const pn = p.phases ? di+4 : di+3;
+    doc.text(String(pn), PW-M, PH-5, {align:'right'});
+  });
+
+  /* ============ PAGINA FINAL ============ */
+  newPage();
+  sp(16);
+  doc.setFontSize(40); doc.setFont('helvetica','bold'); TLIME();
+  doc.text(BRAND.gymName.toUpperCase(), M, y); y+=13;
+  doc.setFontSize(10); doc.setFont('helvetica','normal'); TMUT2();
+  doc.text(BRAND.slogan, M, y); y+=8;
+  ln(); sp(6);
+
+  doc.setFontSize(10); doc.setFont('helvetica','bold'); TWHT();
+  doc.text('NECESITAS AYUDA CON TU TECNICA?', M, y); y+=6;
+  doc.setFontSize(8.5); doc.setFont('helvetica','normal'); TMUT();
+  doc.text(BRAND.contactText, M, y); y+=12;
+
+  TGRN(); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text('RESUMEN DE TU PLAN:', M, y); y+=6;
+  const sf = ['Plan: '+p.label,'Objetivo: '+p.obj+' | Nivel: '+p.niv,'Dias/semana: '+p.diasFinal+' | Zona: '+p.zona,'Preferencia: '+p.tipo+(p.les!=='Ninguna'?' | Limitacion: '+p.les:''),'Generado el: '+ds];
+  doc.setFontSize(8); doc.setFont('helvetica','normal'); TMUT();
+  sf.forEach(l => { chk(5); doc.text(l, M, y); y+=5; });
+  sp(10);
+
+  doc.setFontSize(9.5); doc.setFont('helvetica','italic'); TMUT2();
+  const mfl = doc.splitTextToSize('"'+p.motivational+'"', CW);
+  chk(mfl.length*5+4);
+  doc.text(mfl, M, y); y+=mfl.length*5+8;
+
+  doc.setFontSize(7); TMUT(); doc.setFont('helvetica','normal');
+  doc.text(BRAND.footerText, M, y);
+
+  // Barra lime final
+  FLIME(); doc.rect(0, PH-4, PW, 4, 'F');
+
+  const fname = (BRAND.gymName+'_'+p.label+'_'+new Date().toISOString().slice(0,10)).replace(/[\s\/\\]/g,'_') + '.pdf';
+  doc.save(fname);
+}
+
+/*
+  AI INTEGRATION PLACEHOLDER
+  Para conectar Claude u OpenAI: crear un backend/serverless.
+  NUNCA colocar API keys en el HTML cliente.
+
+  async function generateWithAI(userData) {
+    const res = await fetch('/api/generate-plan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData)
+    });
+    return await res.json();
+  }
+*/
+</script>
+</body>
+</html>
